@@ -11,69 +11,72 @@ Doplniť domovskú stránku o obsah, ktorý dnes chýba: fotky v slideri, inform
 ### Dátový model (Prisma)
 
 - **`Photo`** (nový): `id`, `url` (string), `alt` (string), `order` (int, default 0), `isActive` (boolean, default true). Domovská stránka načíta aktívne fotky a pri každom načítaní stránky ich zamieša. Náhodné poradie sa určuje na serveri, aby sa SSR a klient zhodovali.
-- **`EditionStat`** (nový): `id`, `editionId` (FK -> Edition.id, onDelete: Cascade), `label` (string), `value` (string), `order` (int, default 0). Štatistiky sú voľný zoznam dvojíc (napr. počet bežcov, počet dobehnutých).
-- **`Sponsor`** (úprava): zruší sa väzba na ročník (`editionId` a jej FK). Sponzori sú globálny zoznam s poľami `id`, `name`, `logoUrl` (`String?`), `webUrl` (`String?`), `order` (int, default 0). Sponzor bez loga sa zobrazí ako overlay s menom. Migrácia zruší stĺpec `editionId`; seed zatiaľ nemá sponzorov, takže sa nič nestratí.
-- **`Edition.infoHtml`** (existujúce pole): text o ročníku, zatiaľ ako jednoduché HTML zo seedu. Editácia cez editor je samostatný modul (pozri sekciu 5, bod 7).
-- Schéma sa mení cez migráciu; seed doplní štatistiky k aktuálnemu ročníku a dvoch sponzorov, z toho jedného bez loga.
+- **`EditionStat`** (nový): `id`, `editionId` (FK -> Edition.id, onDelete: Cascade), `label` (string), `value` (string), `order` (int, default 0). Štatistiky sú voľný zoznam dvojíc.
+- **`Sponsor`** (úprava): väzba na ročník (`editionId`) je zrušená. Sponzori sú globálny zoznam s poľami `id`, `name`, `logoUrl` (`String?`), `webUrl` (`String?`), `order` (int, default 0). Sponzor bez loga sa zobrazí ako overlay s menom.
+- **`Edition.infoHtml`** (existujúce pole): text o ročníku. Editácia cez editor je samostatný modul (pozri sekciu 5, bod 8).
+- Migrácia `home_content_and_global_sponsors` je aplikovaná.
 
 ### Server loader
 
-- `src/routes/+page.server.ts` načíta aktuálny ročník (`isCurrent: true`) s trasami. Sponzorov už nenačítava cez ročník, ale ako globálny zoznam zoradený podľa `order`. Ďalej načíta aktívne fotky (zamiešané) a štatistiky ročníka zoradené podľa `order`.
-- Sponzori sa rozdelia do dvoch radov podľa poradia: párne indexy do prvého radu, nepárne do druhého. Rozdelenie je čistá funkcia v `$lib/utils/front/`.
+- `src/routes/+page.server.ts` načíta aktuálny ročník (`isCurrent: true`) s trasami a štatistikami zoradenými podľa `order`.
+- Zároveň načíta aktívne fotky (zamiešané na serveri) a globálny zoznam sponzorov zoradený podľa `order`.
+- `infoHtml` sa sanitizuje už na serveri, takže do stránky sa dostane len povolené HTML.
 - Ak nie je aktuálny ročník, platí existujúce 404.
+
+### Čisté funkcie a server
+
+- `$lib/utils/front/shuffle.ts`: zamiešanie kópie poľa; generátor náhodných čísel je injektovateľný kvôli testom.
+- `$lib/utils/front/sponsorRows.ts`: rozdelenie sponzorov do dvoch radov. Párne indexy idú do prvého radu, nepárne do druhého.
+- `$lib/server/sanitizeInfoHtml.ts`: povolené sú odseky, nadpisy, zoznamy, odkazy (`http`, `https`, `mailto`) a formátovanie; skripty a obslužné atribúty sa odstránia.
 
 ### Komponenty (Svelte 5 runes, semantické tokeny)
 
-- `$lib/components/organism/Hero.svelte` (existuje): logo klubu, názov ročníka, dátum, odpočet a **jediné** registračné tlačidlo na stránke.
-- `$lib/components/organism/PhotoSlider.svelte`: prepína fotky každých 6 sekúnd. Pohyb sa zastaví pri hover, fokuse a dotyku a pokračuje, keď sa kurzor alebo prst uvoľní. Navigácia šípkami a bodkami. Pri `prefers-reduced-motion` sa automatické prepínanie vypne. Bez externej knižnice.
-- `$lib/components/organism/EditionInfo.svelte`: štatistiky (zoznam dvojíc) a `infoHtml` vykreslený cez sanitizáciu. Registračné tlačidlo tu nie je.
-- `$lib/components/organism/SponsorMarquee.svelte`: jeden rad sponzorov, pohyb v zadanom smere (`left` / `right`). Prvý rad ide doľava, druhý doprava. Pohyb sa zastaví pri hover, fokuse a dotyku. Logo sa zobrazí z `logoUrl`; ak chýba, zobrazí sa overlay s menom. Ak má sponzor `webUrl`, klik otvorí odkaz v novom okne. Obsah sa duplikuje, aby animácia plynule pokračovala; duplikát má `aria-hidden`.
-- `$lib/components/atoms/Button.svelte` (existuje): používa ho `Hero` pre registračné tlačidlo.
-- Logo klubu: konštanta `LOGO_URL` v `$lib/constants.ts` (existuje).
-
-### Obsah HTML
-
-- `infoHtml` sa pred vykreslením musí sanitizovať. Povolené sú len bezpečné značky a atribúty. Text prichádza z databázy a neskôr z editora, takže sa nesmie vykresliť nefiltrovaný. Výber sanitizačného riešenia je v sekcii 6, bod 4.
+- `Hero.svelte` (existuje): logo klubu, názov ročníka, dátum, odpočet a **jediné** registračné tlačidlo na stránke.
+- `atoms/PauseButton.svelte`: tlačidlo pauza/play s popisom podľa stavu. Používajú ho slider aj sponzori.
+- `organism/PhotoSlider.svelte`: prepína fotky každých 6 sekúnd s prekrývaním. Navigácia šípkami a bodkami. Pohyb sa pozastaví pri hover, fokuse a dotyku a pokračuje po odchode alebo uvoľnení. Tlačidlo pauzy zastaví pohyb natrvalo, kým ho používateľ znova nespustí. Pri `prefers-reduced-motion` sa automatické prepínanie vypne.
+- `organism/EditionInfo.svelte`: štatistiky (zoznam dvojíc) a sanitizované `infoHtml`. Registračné tlačidlo tu nie je.
+- `organism/SponsorMarquee.svelte`: oba rady spolu s jedným spoločným tlačidlom pauzy. Prvý rad ide doľava, druhý doprava (CSS keyframes v `theme.css`). Pohyb sa pozastaví pri hover, fokuse a dotyku. Logo sa zobrazí z `logoUrl`; ak chýba, zobrazí sa overlay s menom. Ak má sponzor `webUrl`, klik otvorí odkaz v novom okne. Duplikát obsahu, ktorý drží slučku plynulou, je `inert` a `aria-hidden`.
+- Logo klubu: konštanta `LOGO_URL = '/logo2.png'` v `$lib/constants.ts`, súbor je v `static/`.
 
 ## 3. Checklist implementácie (Kroky pre agenta)
 
 - [x] 1. Logo klubu na domovskej stránke: konštanta `LOGO_URL`, obrázok v `Hero.svelte` s alt textom a testom.
-- [ ] 2. Prisma: modely `Photo` a `EditionStat`, `Sponsor` bez `editionId` s voliteľným `logoUrl` a `webUrl`; migrácia a seed (štatistiky k aktuálnemu ročníku, dvaja sponzori, z toho jeden bez loga; bez fotiek, kým nebudú URL).
-- [ ] 3. `+page.server.ts`: aktuálny ročník s trasami, aktívne fotky (zamiešané), štatistiky a globálni sponzori.
-- [ ] 4. Čisté funkcie v `$lib/utils/front/`: zamiešanie poľa s injektovateľným generátorom náhodných čísel a rozdelenie sponzorov do dvoch radov. Testy vo vitest (server projekt).
-- [ ] 5. `PhotoSlider.svelte`: prepínanie každých 6 s, pauza pri hover / fokuse / dotyku, navigácia, vypnutie pri `prefers-reduced-motion`. Browser test.
-- [ ] 6. `EditionInfo.svelte`: štatistiky a sanitizované `infoHtml`, bez registračného tlačidla. Test sanitizácie.
-- [ ] 7. `SponsorMarquee.svelte`: dva rady opačným smerom, pauza pri hover / fokuse / dotyku, overlay pre sponzora bez loga, odkaz na `webUrl`. Browser test.
-- [ ] 8. Zložiť `+page.svelte` (Hero, slider, info, sponzori), overiť dáta zo servera cez dev server.
-- [ ] 9. Spustiť `bun run check`, `bun run test`, `bun run lint` a overiť nulové chyby.
+- [x] 2. Prisma: modely `Photo` a `EditionStat`, `Sponsor` bez `editionId`; migrácia a seed (štatistiky k aktuálnemu ročníku, dvaja sponzori bez loga, žiadne fotky, kým nebudú URL).
+- [x] 3. `+page.server.ts`: aktuálny ročník, aktívne fotky (zamiešané), štatistiky, globálni sponzori a sanitizované `infoHtml`.
+- [x] 4. Čisté funkcie `shuffle` a `splitIntoRows`, sanitizér `sanitizeInfoHtml`. Testy vo vitest (server projekt).
+- [x] 5. `PhotoSlider.svelte`: prepínanie každých 6 s, pauza pri hover / fokuse / dotyku, tlačidlo pauzy, navigácia, vypnutie pri `prefers-reduced-motion`. Browser test.
+- [x] 6. `EditionInfo.svelte`: štatistiky a sanitizované `infoHtml`, bez registračného tlačidla. Browser test.
+- [x] 7. `SponsorMarquee.svelte`: dva rady opačným smerom, spoločné tlačidlo pauzy, overlay pre sponzora bez loga, odkaz na `webUrl`. Browser test.
+- [x] 8. `+page.svelte` skladá Hero, slider (len ak sú fotky), info a sponzorov (len ak sú sponzori). Overené cez dev server.
+- [x] 9. `bun run check`, `bun run test` (27 testov), `bun run lint` a Prettier bez chýb.
 
 ## 4. Čo nerobiť (Non-Goals & Constraints)
 
 - Neriešiť admin rozhranie ani jeho prihlasovanie v tomto module. Rozhodnutie o prístupe je v sekcii 5, bod 6.
-- Neriešiť editor Tiptap. Je to samostatný modul (pozri sekciu 5, bod 7).
-- Neriešiť nahrávanie súborov na disk. Fotky, logá a odkazy sú textové URL (konvencia z fázy 01).
-- Neinštalovať ťažké CSS ani animačné knižnice. Animácie robiť CSS keyframes.
+- Neriešiť editor Tiptap. Je to samostatný modul (pozri sekciu 5, bod 8).
+- Neriešiť nahrávanie súborov cez aplikáciu. Logá sú v `static/`, fotky a odkazy sú textové URL.
+- Neinštalovať ťažké CSS ani animačné knižnice. Animácie sú CSS keyframes a JS len tam, kde treba.
 - Nevytvárať inline štýly ani priame farby; používať len sémantické tokeny.
 - Neriešiť archív ročníkov (`/rocnik/[year]`), mapy ani tabuľky výsledkov.
 
 ## 5. Rozhodnuté
 
 1. **Duplicitný obsah**: `Hero` je hlavná sekcia s odpočtom a jediným registračným tlačidlom. `EditionInfo` obsahuje len štatistiky a info text.
-2. **Pohyb a dotyk**: slider a sponzori sa zastavia pri hover, fokuse a dotyku a pokračujú po odchode alebo uvoľnení. Viditeľné tlačidlo pauzy sa zatiaľ nepridáva, pozri otvorenú otázku 1.
+2. **Pohyb a dotyk**: slider a sponzori sa pozastavia pri hover, fokuse a dotyku. Pridané je aj viditeľné tlačidlo pauzy, aby bol pohyb ovládateľný aj bez hover a dotyku (WCAG 2.2.2).
 3. **Sponzori nie sú viazaní na ročník**: globálny zoznam, každý rok sa nezadáva znova. Bez úrovní (hlavný / partner).
 4. **Fotky**: pomer 16:9, prepínanie každých 6 sekúnd, `alt` text povinný. Ak nie sú aktívne fotky, slider sa skryje. Súhlas so zverejnením fotografií bežcov zabezpečuje klub mimo kódu.
 5. **Význam „1.1“**: zadanie „slider show 1.1“ znamená fotografický slider na domovskej stránke.
-6. **Admin (samostatný modul, rozhodnutie teraz)**: prístup nebude cez používateľské účty, ale cez jednoduchý tajný token.
-   - Token sa načíta z premennej prostredia (napr. `ADMIN_TOKEN`), nie z repozitára.
-   - Prehliadač pri navigácii nevie poslať vlastnú HTTP hlavičku. Admin stránka preto vyžiada token raz a uloží ho do `httpOnly` cookie.
-   - Konkrétnu logiku overovania implementuje agent a výsledok sa oznámi po dokončení. Používateľ zadá len hodnotu do `.env`. Krátky token ako `admin1224` sa neodporúča, lebo je to jediná ochrana.
-7. **Logo**: súbor sa stiahne do `static/` a odkaz v kóde bude lokálna cesta. Výnimka z konvencie fázy 01 (bez fyzických súborov) je rozhodnutie používateľa. Zatiaľ je v kóde odkaz na WordPress, kým súbor nie je v `static/`.
+6. **Admin (samostatný modul)**: prístup cez jednoduchý tajný token z premennej prostredia `ADMIN_TOKEN` v `.env`, nie z repozitára. Prehliadač nevie pri navigácii poslať vlastnú hlavičku, preto admin stránka vyžiada token raz a uloží ho do `httpOnly` cookie. Logiku overovania implementuje agent a výsledok sa oznámi po dokončení.
+7. **Logo**: hlavné logo je `static/logo2.png` (sivý kruh z pôvodnej URL). Zobrazuje sa v `Hero`. Súbor `static/logo1.png` (modrý nápis „BEH ZUBROHLAVSKÝM CHOTÁROM, Memoriál Peťa Stoklasu“) je zatiaľ nepoužitý, pozri otvorenú otázku 1.
 8. **Tiptap**: v tomto module sa nerieši. Dovtedy sa `infoHtml` upravuje priamo v seede alebo v databáze. Tiptap je editor s formátovacími tlačidlami, do ktorého admin píše text bez znalosti HTML. Zavedie sa v samostatnom module.
+9. **Sanitizácia `infoHtml`**: knižnica `sanitize-html` (plus typy `@types/sanitize-html`) beží len na serveri. Predvolená voľba z otvorenej otázky je potvrdená implementáciou.
+10. **Seed**: štatistiky aktuálneho ročníka sa pri každom spustení nahradia (seed ich vlastní). Sponzori sa seedujú len vtedy, keď je tabuľka prázdna, aby sa neprepísali zmeny z admin rozhrania.
 
 ## 6. Otvorené otázky (predvolená voľba je zvolená, potvrďte alebo zmeňte)
 
-1. **Tlačidlo pauzy pri slideri a sponzoroch**: WCAG 2.2.2 vyžaduje mechanizmus, ktorým používateľ pohyb zastaví. Odporúčam pridať viditeľné tlačidlo pauza/play. Pauza pri hover a dotyku zostane ako doplnok. _Predvolene: pridať tlačidlo._
-2. **Poradie sekcií a kotvy v menu**: navigácia odkazuje na `#propozicie`, `#trasy`, `#vysledky`, `#kontakt`, ktoré ešte neexistujú. _Predvolene poradie: Hero, slider, info a štatistiky, sponzori; odkazy v menu zostávajú, kým sekcie nevzniknú._
-3. **Štatistiky pred pretekmi**: _predvolene sa zobrazujú vždy, ak existujú; pri prázdnom zozname sa sekcia skryje._
-4. **Sanitizácia `infoHtml`**: odporúčam malú knižnicu `sanitize-html` (bez prehliadača, vhodná na server). Ak nechcete novú závislosť, napíšem vlastný allowlist, ale ten je bezpečnostne citlivejší. _Predvolene: `sanitize-html`, potvrďte._
-5. **Logo a navigácia**: logo je svetlosivé na svetlom pozadí, takže môže byť slabo čitateľné. Potrebujete tmavšiu verziu? _Predvolene sa logo zobrazuje len v `Hero`, navigácia ostáva s favikonou._
+1. **Memoriálne logo (`logo1.png`)**: kde ho použiť? _Predvolene: nepoužité. Navrhujem ho dať pod hlavné logo v `Hero` alebo do päty stránky._
+2. **Zdroj fotiek**: zatiaľ žiadne fotky nie sú. Slider sa skryje, kým nepridáte URL do seedu alebo cez admin. _Predvolene: pridať URL do seedu, ak mi ich dáte._
+3. **Logá sponzorov**: seed má dvoch sponzorov bez loga, zobrazia sa ako overlay s menom. _Predvolene: dokým nebudú logá, ostáva overlay._
+4. **Poradie sekcií a kotvy v menu**: navigácia odkazuje na `#propozicie`, `#trasy`, `#vysledky`, `#kontakt`, ktoré ešte neexistujú. _Predvolene poradie: Hero, slider, info a štatistiky, sponzori; odkazy v menu zostávajú, kým sekcie nevzniknú._
+5. **Štatistiky pred pretekmi**: _predvolene sa zobrazujú vždy, ak existujú; pri prázdnom zozname sa sekcia skryje._
+6. **Tmavšia verzia loga**: `logo2.png` je svetlosivé na svetlom pozadí a môže byť slabo čitateľné. _Predvolene sa ponecháva._

@@ -1,7 +1,7 @@
 import { prisma } from '../src/lib/server/db';
 
-// Sample data for local development; dates, URLs and edition numbers are placeholders.
-// Each upsert writes the full edition on every run, so re-running the seed updates existing rows too.
+// Sample data for local development; dates, URLs, stats and sponsor names are placeholders.
+// Editions are upserted with their full data, so re-running the seed updates existing rows.
 const sampleRoutes = {
 	create: [
 		{ name: '5 km', distanceKm: 5, elevationM: 60 },
@@ -29,6 +29,19 @@ const edition2027 = {
 	registrationUrl: 'https://behzubrohlava.sk/registracia/2027'
 };
 
+// Stats belong to the current edition; the seed owns them, so they are replaced on every run
+const stats2027 = [
+	{ label: 'Štartujúcich bežcov', value: '312', order: 0 },
+	{ label: 'Dobehlo do cieľa', value: '298', order: 1 },
+	{ label: 'Dobrovoľníkov', value: '45', order: 2 }
+];
+
+// Sponsors are a global list; they are only seeded when the table is empty so admin edits survive
+const sampleSponsors = [
+	{ name: 'Ukážkový sponzor A', webUrl: 'https://example.com', order: 0 },
+	{ name: 'Ukážkový sponzor B', order: 1 }
+];
+
 async function main() {
 	await prisma.edition.upsert({
 		where: { year: 2025 },
@@ -44,9 +57,13 @@ async function main() {
 
 	await prisma.edition.upsert({
 		where: { year: 2027 },
-		update: edition2027,
-		create: { year: 2027, ...edition2027, routes: sampleRoutes }
+		update: { ...edition2027, stats: { deleteMany: {}, create: stats2027 } },
+		create: { year: 2027, ...edition2027, routes: sampleRoutes, stats: { create: stats2027 } }
 	});
+
+	if ((await prisma.sponsor.count()) === 0) {
+		await prisma.sponsor.createMany({ data: sampleSponsors });
+	}
 }
 
 main()

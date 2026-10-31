@@ -22,7 +22,7 @@ model Edition {
   propositionsHtml String?
   infoHtml         String?
   routes           Route[]
-  sponsors         Sponsor[]
+  stats            EditionStat[]
 }
 
 model Route {
@@ -38,14 +38,30 @@ model Route {
   @@index([editionId])
 }
 
-model Sponsor {
+model EditionStat {
   id        Int     @id @default(autoincrement())
   editionId Int
   edition   Edition @relation(fields: [editionId], references: [id], onDelete: Cascade)
-  name      String
-  logoUrl   String
-  webUrl    String?
+  label     String
+  value     String
   order     Int     @default(0)
 
   @@index([editionId])
+}
+
+// Sponsors are one global list shared by all editions
+model Sponsor {
+  id      Int     @id @default(autoincrement())
+  name    String
+  logoUrl String?
+  webUrl  String?
+  order   Int     @default(0)
+}
+
+model Photo {
+  id       Int     @id @default(autoincrement())
+  url      String
+  alt      String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
 }
