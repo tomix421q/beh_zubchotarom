@@ -20,7 +20,11 @@ export const load: PageServerLoad = async () => {
 	]);
 
 	return {
-		edition: { ...edition, infoHtml: sanitizeInfoHtml(edition.infoHtml) },
+		edition: {
+			...edition,
+			infoHtml: sanitizeInfoHtml(edition.infoHtml),
+			propositionsHtml: sanitizeInfoHtml(edition.propositionsHtml)
+		},
 		photos: shuffle(photos),
 		sponsors
 	};
