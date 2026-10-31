@@ -18,14 +18,4 @@ describe('SponsorMarquee.svelte', () => {
 			.element(page.getByRole('img', { name: 'Sponzor s logom' }))
 			.toHaveAttribute('src', '/logo1.png');
 	});
-
-	it('toggles the shared pause button for both rows', async () => {
-		render(SponsorMarquee, { rows: [[withLogo], [withoutLogo]] });
-
-		await page.getByRole('button', { name: 'Pozastaviť sponzorov' }).click();
-
-		await expect
-			.element(page.getByRole('button', { name: 'Spustiť sponzorov' }))
-			.toBeInTheDocument();
-	});
 });

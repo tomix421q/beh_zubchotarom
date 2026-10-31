@@ -1,16 +1,9 @@
 <script lang="ts">
-	import PauseButton from '../atoms/PauseButton.svelte';
-
 	type Sponsor = { id: number; name: string; logoUrl: string | null; webUrl: string | null };
 
-	// Both rows share one pause state; the first row moves left and the second moves right
+	// The first row moves left and the second moves right; both run all the time
 	let { rows }: { rows: [Sponsor[], Sponsor[]] } = $props();
 
-	let isPausedByUser = $state(false);
-	let isHovered = $state(false);
-	let hasFocus = $state(false);
-
-	const isPaused = $derived(isPausedByUser || isHovered || hasFocus);
 	const directions = ['animate-marquee-left', 'animate-marquee-right'] as const;
 </script>
 
@@ -41,32 +34,11 @@
 	{/each}
 {/snippet}
 
-<section
-	aria-label="Partneri a sponzori"
-	class="flex flex-col gap-4"
-	onpointerenter={() => (isHovered = true)}
-	onpointerleave={() => (isHovered = false)}
-	onfocusin={() => (hasFocus = true)}
-	onfocusout={() => (hasFocus = false)}
->
-	<div class="flex justify-end">
-		<PauseButton
-			isPaused={isPausedByUser}
-			label="sponzorov"
-			onclick={() => (isPausedByUser = !isPausedByUser)}
-		/>
-	</div>
-
+<section aria-label="Partneri a sponzori" class="flex flex-col gap-4">
 	{#each rows as row, rowIndex (rowIndex)}
 		{#if row.length > 0}
 			<div class="overflow-hidden">
-				<div
-					class={[
-						'flex w-max motion-reduce:animate-none',
-						directions[rowIndex],
-						isPaused && '[animation-play-state:paused]'
-					]}
-				>
+				<div class={['flex w-max motion-reduce:animate-none', directions[rowIndex]]}>
 					<ul class="flex items-center">{@render sponsorItems(row)}</ul>
 					<!-- The copy only keeps the loop seamless, so it is hidden from keyboard and screen readers -->
 					<ul class="flex items-center" aria-hidden="true" inert>{@render sponsorItems(row)}</ul>

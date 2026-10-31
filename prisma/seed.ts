@@ -42,6 +42,13 @@ const sampleSponsors = [
 	{ name: 'Ukážkový sponzor B', order: 1 }
 ];
 
+// Mockup photos until real ones are added; they are only seeded when the table is empty so admin edits survive
+const samplePhotos = [
+	{ url: '/photos/mockup-1.svg', alt: 'Ukážková fotka 1', order: 0 },
+	{ url: '/photos/mockup-2.svg', alt: 'Ukážková fotka 2', order: 1 },
+	{ url: '/photos/mockup-3.svg', alt: 'Ukážková fotka 3', order: 2 }
+];
+
 async function main() {
 	await prisma.edition.upsert({
 		where: { year: 2025 },
@@ -63,6 +70,10 @@ async function main() {
 
 	if ((await prisma.sponsor.count()) === 0) {
 		await prisma.sponsor.createMany({ data: sampleSponsors });
+	}
+
+	if ((await prisma.photo.count()) === 0) {
+		await prisma.photo.createMany({ data: samplePhotos });
 	}
 }
 
