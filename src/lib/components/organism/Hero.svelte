@@ -3,7 +3,7 @@
 	import Button from '#lib/components/atoms/Button.svelte';
 	import { formatEventDate, getCountdown } from '../../utils/dateUtils';
 	import { getHeroCta } from '../../utils/front/heroCta';
-	import { SITE_NAME } from '../../constants';
+	import { LOGO_URL, SITE_NAME } from '../../constants';
 
 	let { edition }: { edition: Edition } = $props();
 
@@ -30,6 +30,13 @@
 <section
 	class="overflow-hidden rounded-xl border border-border bg-linear-to-b from-primary/10 to-background px-6 py-12 text-center sm:py-16"
 >
+	<img
+		src={LOGO_URL}
+		alt="Logo Behu Zubrohlava"
+		width="300"
+		height="282"
+		class="mx-auto mb-6 size-32 object-contain sm:size-40"
+	/>
 	<p class="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
 		{edition.editionNumber}. ročník
 	</p>

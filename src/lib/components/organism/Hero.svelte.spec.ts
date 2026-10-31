@@ -2,6 +2,7 @@ import { page } from 'vitest/browser';
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import Hero from './Hero.svelte';
+import { LOGO_URL } from '../../constants';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -26,6 +27,14 @@ describe('Hero.svelte', () => {
 		await expect
 			.element(page.getByRole('link', { name: 'Registrovať sa' }))
 			.toHaveAttribute('href', 'https://registracia.example/2026');
+	});
+
+	it('shows the club logo above the edition title', async () => {
+		render(Hero, { edition });
+
+		await expect
+			.element(page.getByRole('img', { name: 'Logo Behu Zubrohlava' }))
+			.toHaveAttribute('src', LOGO_URL);
 	});
 
 	it('hides the countdown and links to results after the event day', async () => {
