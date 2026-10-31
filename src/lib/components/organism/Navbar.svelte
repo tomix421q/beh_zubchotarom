@@ -4,10 +4,10 @@
 	import { LOGO_URL, SITE_NAME } from '../../constants';
 
 	const sectionLinks = [
-		{ href: resolve('/#propozicie'), label: 'Propozície' },
-		{ href: resolve('/#trasy'), label: 'Trasy' },
-		{ href: resolve('/#vysledky'), label: 'Výsledky' },
-		{ href: resolve('/#kontakt'), label: 'Kontakt' }
+		{ href: resolve('/propozicie'), label: 'Propozície' },
+		{ href: resolve('/trasy'), label: 'Trasy' },
+		{ href: resolve('/vysledky'), label: 'Výsledky' },
+		{ href: resolve('/kontakt'), label: 'Kontakt' }
 	];
 
 	let isMenuOpen = $state(false);
