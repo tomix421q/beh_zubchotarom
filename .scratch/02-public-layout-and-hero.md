@@ -15,7 +15,7 @@ Vytvoriť verejný frontendový layout (mobile-first), serverový loader pre na�
 ## 3. Checklist implementácie (Kroky pre agenta)
 - [x] 1. Vytvoriť `src/routes/+layout.svelte` s globálnym štýlovaním, sémantickými triedami a základným layout obalom.
 - [x] 2. Vytvoriť `src/routes/+page.server.ts`, ktorý načíta aktuálny ročník vrátane trás a sponzorov zo seedu z Fázy 1.
-- [x] 3. Vytvoriť `$lib/components/molecules/Navbar.svelte` s podporou mobilného zobrazenia (otváranie/zatváranie cez Svelte 5 `$state`).
+- [x] 3. Vytvoriť `$lib/components/organism/Navbar.svelte` s podporou mobilného zobrazenia (otváranie/zatváranie cez Svelte 5 `$state`). *(Odchýlka: presunuté z `molecules/` do `organism/` podľa AGENTS.md §2.)*
 - [x] 4. Vytvoriť `$lib/components/organism/Hero.svelte` prijímajúci prop `edition` cez `$props()`, s formátovaným dátumom a odkazom na registráciu.
 - [x] 5. Zložiť `src/routes/+page.svelte`, zobraziť Hero sekciu a overiť správne pretekanie dát zo servera.
 - [x] 6. Spustiť `bun run check` a `bun run test` – overiť nulové typové a syntaktické chyby.
