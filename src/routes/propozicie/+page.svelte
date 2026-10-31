@@ -9,12 +9,14 @@
 	<title>Propozície · {SITE_NAME}</title>
 </svelte:head>
 
-<section class="flex flex-col gap-6">
+<section class="glassCard flex flex-col gap-6 p-6">
 	<h1 class="text-3xl font-bold text-foreground">Propozície</h1>
 	{#if data.edition.propositionsHtml}
 		<!-- propositionsHtml is sanitized on the server before it reaches the page -->
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		<div class="prose max-w-none text-foreground">{@html data.edition.propositionsHtml}</div>
+		<div class="prose max-w-none text-foreground prose-invert">
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html data.edition.propositionsHtml}
+		</div>
 	{:else}
 		<p class="text-muted-foreground">Propozície budú zverejnené čoskoro.</p>
 	{/if}

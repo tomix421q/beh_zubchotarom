@@ -10,6 +10,11 @@
   - NIKDY nepoužívaj priame hex ani náhodné farby (napr. `bg-blue-500`, `text-gray-400`, `border-zinc-700`).
   - VŽDY používaj sémantické CSS tokeny: `bg-card`, `bg-background`, `text-primary`, `text-muted-foreground`, `border-border`.
   - Opakujúce sa Tailwind zoskupenia ukladaj do projektových tried (napr. `.cardNormalize`, `.headingNormalize`, `.inputNormalize`).
+  - **Dizajnový jazyk (tmavý, glass):** web je tmavý. Pozadie je `static/bg.jpg` s tmavým prekrytím `bg-background/75`, text je svetlý (`text-foreground`).
+  - Každá sekcia a karta nad pozadím je glass karta: trieda `.glassCard` z `src/lib/styles/theme.css`. Novú kartu nerob vlastným `bg-*`.
+  - Farby sa menia len v tokenoch v `src/lib/styles/theme.css`. Nová farba znamená nový token, nie priamu hodnotu v komponente.
+  - Dlhý formátovaný text (`infoHtml`, propozície) je v `prose prose-invert`, inak je na tmavom pozadí nečitateľný.
+  - Hlavná akcia je `Button` variant `primary`, sekundárna variant `ghost`.
 - **Tvorba nových komponentov:**
   - Komponenty organizuj podľa veľkosti do `$lib/components/[atoms,molecules,organism]`.
   - Zváž použitie čistých `$props()` verzus kompozíciu cez Svelte 5 snippets (`Snippet`, `{@render children()}`).

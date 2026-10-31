@@ -4,7 +4,7 @@
 	let { stats, infoHtml }: { stats: Stat[]; infoHtml: string | null } = $props();
 </script>
 
-<section class="flex flex-col gap-8">
+<section class="glassCard flex flex-col gap-8 p-6">
 	{#if stats.length > 0}
 		<dl class="grid grid-cols-2 gap-4 sm:grid-cols-3">
 			{#each stats as stat (stat.id)}
@@ -19,6 +19,6 @@
 	{#if infoHtml}
 		<!-- infoHtml is sanitized on the server before it reaches the page -->
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		<div class="prose max-w-none text-foreground">{@html infoHtml}</div>
+		<div class="prose max-w-none text-foreground prose-invert">{@html infoHtml}</div>
 	{/if}
 </section>

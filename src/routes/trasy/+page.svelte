@@ -9,7 +9,7 @@
 	<title>Trasy · {SITE_NAME}</title>
 </svelte:head>
 
-<section class="flex flex-col gap-6">
+<section class="glassCard flex flex-col gap-6 p-6">
 	<h1 class="text-3xl font-bold text-foreground">Trasy</h1>
 	{#if data.edition.routes.length > 0}
 		<ul class="grid gap-4 sm:grid-cols-2">

@@ -27,9 +27,7 @@
 	]);
 </script>
 
-<section
-	class="overflow-hidden rounded-xl border border-border bg-linear-to-b from-primary/10 to-background px-6 py-12 text-center sm:py-16"
->
+<section class="glassCard overflow-hidden px-6 py-12 text-center sm:py-16">
 	<img
 		src={LOGO_URL}
 		alt="Logo Behu Zubrohlava"

@@ -41,7 +41,7 @@
 <section
 	aria-roledescription="carousel"
 	aria-label="Fotografie z pretekov"
-	class="flex flex-col gap-3"
+	class="glassCard flex flex-col gap-3 p-4"
 	onpointerenter={() => (isHovered = true)}
 	onpointerleave={() => (isHovered = false)}
 	onfocusin={() => (hasFocus = true)}

@@ -37,6 +37,7 @@
 		"prisma": "^7.10.1",
 		"svelte": "^5.57.3",
 		"svelte-check": "^4.7.7",
+		"tailwind-variants": "^3.3.0",
 		"tailwindcss": "^4.3.3",
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.72.1",
@@ -51,6 +52,8 @@
 	"dependencies": {
 		"@prisma/adapter-libsql": "^7.10.1",
 		"@prisma/client": "^7.10.1",
-		"sanitize-html": "^2.18.1"
+		"clsx": "^2.1.1",
+		"sanitize-html": "^2.18.1",
+		"tailwind-merge": "^3.7.0"
 	}
 }

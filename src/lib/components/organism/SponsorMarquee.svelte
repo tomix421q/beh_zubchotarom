@@ -34,7 +34,7 @@
 	{/each}
 {/snippet}
 
-<section aria-label="Partneri a sponzori" class="flex flex-col gap-4">
+<section aria-label="Partneri a sponzori" class="glassCard flex flex-col gap-4 p-6">
 	{#each rows as row, rowIndex (rowIndex)}
 		{#if row.length > 0}
 			<div class="overflow-hidden">

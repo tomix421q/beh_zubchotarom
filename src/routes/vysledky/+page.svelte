@@ -10,7 +10,7 @@
 	<title>Výsledky · {SITE_NAME}</title>
 </svelte:head>
 
-<section class="flex flex-col items-start gap-6">
+<section class="glassCard flex flex-col items-start gap-6 p-6">
 	<h1 class="text-3xl font-bold text-foreground">Výsledky</h1>
 	{#if data.edition.resultsUrl}
 		<Button href={data.edition.resultsUrl}>Zobraziť výsledky</Button>
