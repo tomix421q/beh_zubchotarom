@@ -59,19 +59,20 @@ Doplniť domovskú stránku o obsah, ktorý dnes chýba: fotky v slideri, inform
 ## 5. Rozhodnuté
 
 1. **Duplicitný obsah**: `Hero` je hlavná sekcia s odpočtom a jediným registračným tlačidlom. `EditionInfo` obsahuje len štatistiky a info text.
-2. **Pohyb a prístupnosť**: slider a sponzori sa zastavia pri hover, fokuse a dotyku. Viditeľné tlačidlo pauzy sa nepridáva. _Poznámka:_ WCAG 2.2.2 vyžaduje, aby bola pauza ovládateľná používateľom. Automatické pokračovanie po uvoľnení prsta nemusí túto požiadavku spĺňať. Pri ďalšom prístupnostnom audite to treba prehodnotiť.
+2. **Pohyb a dotyk**: slider a sponzori sa zastavia pri hover, fokuse a dotyku a pokračujú po odchode alebo uvoľnení. Viditeľné tlačidlo pauzy sa zatiaľ nepridáva, pozri otvorenú otázku 1.
 3. **Sponzori nie sú viazaní na ročník**: globálny zoznam, každý rok sa nezadáva znova. Bez úrovní (hlavný / partner).
 4. **Fotky**: pomer 16:9, prepínanie každých 6 sekúnd, `alt` text povinný. Ak nie sú aktívne fotky, slider sa skryje. Súhlas so zverejnením fotografií bežcov zabezpečuje klub mimo kódu.
 5. **Význam „1.1“**: zadanie „slider show 1.1“ znamená fotografický slider na domovskej stránke.
 6. **Admin (samostatný modul, rozhodnutie teraz)**: prístup nebude cez používateľské účty, ale cez jednoduchý tajný token.
    - Token sa načíta z premennej prostredia (napr. `ADMIN_TOKEN`), nie z repozitára.
    - Prehliadač pri navigácii nevie poslať vlastnú HTTP hlavičku. Admin stránka preto vyžiada token raz a uloží ho do `httpOnly` cookie.
-   - Krátky token ako `admin1224` odporúčam nahradiť dlhšou náhodnou hodnotou, lebo je to jediná ochrana.
-7. **Tiptap**: v tomto module sa nerieši. Dovtedy sa `infoHtml` upravuje priamo v seede alebo v databáze. Tiptap je editor s formátovacími tlačidlami, do ktorého admin píše text bez znalosti HTML. Zavedie sa v samostatnom module.
+   - Konkrétnu logiku overovania implementuje agent a výsledok sa oznámi po dokončení. Používateľ zadá len hodnotu do `.env`. Krátky token ako `admin1224` sa neodporúča, lebo je to jediná ochrana.
+7. **Logo**: súbor sa stiahne do `static/` a odkaz v kóde bude lokálna cesta. Výnimka z konvencie fázy 01 (bez fyzických súborov) je rozhodnutie používateľa. Zatiaľ je v kóde odkaz na WordPress, kým súbor nie je v `static/`.
+8. **Tiptap**: v tomto module sa nerieši. Dovtedy sa `infoHtml` upravuje priamo v seede alebo v databáze. Tiptap je editor s formátovacími tlačidlami, do ktorého admin píše text bez znalosti HTML. Zavedie sa v samostatnom module.
 
 ## 6. Otvorené otázky (predvolená voľba je zvolená, potvrďte alebo zmeňte)
 
-1. **Logo cez hotlink**: obrázok sa načíta priamo z WordPressu. Ak sa tam zmení cesta, logo zmizne. Alternatíva je stiahnuť ho do `static/`, čo porušuje konvenciu z fázy 01. _Predvolene: hotlink._
+1. **Tlačidlo pauzy pri slideri a sponzoroch**: WCAG 2.2.2 vyžaduje mechanizmus, ktorým používateľ pohyb zastaví. Odporúčam pridať viditeľné tlačidlo pauza/play. Pauza pri hover a dotyku zostane ako doplnok. _Predvolene: pridať tlačidlo._
 2. **Poradie sekcií a kotvy v menu**: navigácia odkazuje na `#propozicie`, `#trasy`, `#vysledky`, `#kontakt`, ktoré ešte neexistujú. _Predvolene poradie: Hero, slider, info a štatistiky, sponzori; odkazy v menu zostávajú, kým sekcie nevzniknú._
 3. **Štatistiky pred pretekmi**: _predvolene sa zobrazujú vždy, ak existujú; pri prázdnom zozname sa sekcia skryje._
 4. **Sanitizácia `infoHtml`**: odporúčam malú knižnicu `sanitize-html` (bez prehliadača, vhodná na server). Ak nechcete novú závislosť, napíšem vlastný allowlist, ale ten je bezpečnostne citlivejší. _Predvolene: `sanitize-html`, potvrďte._
