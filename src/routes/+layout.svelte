@@ -1,6 +1,7 @@
 <script lang="ts">
 	import './layout.css';
 	import favicon from '#lib/assets/favicon.svg';
+	import Navbar from '#lib/components/organism/Navbar.svelte';
 	import type { LayoutProps } from './$types';
 
 	let { children }: LayoutProps = $props();
@@ -10,4 +11,10 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<div class="flex min-h-dvh flex-col bg-background text-foreground">
+	<Navbar />
+
+	<main class="pageContainer flex-1 py-6 sm:py-10">
+		{@render children()}
+	</main>
+</div>
