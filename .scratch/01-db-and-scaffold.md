@@ -19,7 +19,7 @@ Nastaviť dátovú vrstvu pre Beh Zubrohlava pomocou SQLite a Prisma ORM. Pripra
 - [x] 1. Vytvoriť/upraviť `prisma/schema.prisma` s modelmi `Edition`, `Route` a `Sponsor` vrátane indexov a kaskádového mazania.
 - [x] 2. Vytvoriť `$lib/server/db.ts` s bezpečným globálnym singletonom pre PrismaClient.
 - [x] 3. Vytvoriť `prisma/seed.ts`, ktorý naplní databázu aktuálnym ročníkom (2026, `isCurrent: true`, trasy 5 km a 10 km) a jedným archivovaným ročníkom (2025).
-- [x] 4. Pridať `"prisma": { "seed": "bun prisma/seed.ts" }` do `package.json`. *(Odchýlka: Prisma 7 ignoruje tento kľúč, seed je v `prisma.config.ts` pod `migrations.seed`.)*
+- [x] 4. Pridať `"prisma": { "seed": "bun prisma/seed.ts" }` do `package.json`. _(Odchýlka: Prisma 7 ignoruje tento kľúč, seed je v `prisma.config.ts` pod `migrations.seed`.)_
 - [x] 5. Spustiť migráciu cez `bunx prisma migrate dev --name init_editions` a aplikovať seed.
 - [x] 6. Spustiť `bun run check` na overenie, že Prisma typy sú korektne vygenerované a importovateľné.
 
