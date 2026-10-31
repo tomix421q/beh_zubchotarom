@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Edition {
+  id               Int      @id @default(autoincrement())
+  year             Int      @unique
+  editionNumber    Int
+  eventDate        DateTime
+  isCurrent        Boolean  @default(false)
+  registrationUrl  String?
+  resultsUrl       String?
+  galleryUrl       String?
+  propositionsHtml String?
+  infoHtml         String?
+  routes           Route[]
+  sponsors         Sponsor[]
+}
+
+model Route {
+  id          Int     @id @default(autoincrement())
+  editionId   Int
+  edition     Edition @relation(fields: [editionId], references: [id], onDelete: Cascade)
+  name        String
+  distanceKm  Float
+  elevationM  Int?
+  gpxUrl      String?
+  mapEmbedUrl String?
+
+  @@index([editionId])
+}
+
+model Sponsor {
+  id        Int     @id @default(autoincrement())
+  editionId Int
+  edition   Edition @relation(fields: [editionId], references: [id], onDelete: Cascade)
+  name      String
+  logoUrl   String
+  webUrl    String?
+  order     Int     @default(0)
+
+  @@index([editionId])
+}

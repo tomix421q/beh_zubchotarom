@@ -1,0 +1,7 @@
+cat << 'EOF' > .copilotignore
+node_modules/ 
+build/ 
+dist/ 
+.svelte-kit/ 
+.env* 
+EOF
