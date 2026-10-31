@@ -16,12 +16,12 @@ Nastaviť dátovú vrstvu pre Beh Zubrohlava pomocou SQLite a Prisma ORM. Pripra
 
 ## 3. Checklist implementácie (Kroky pre agenta)
 
-- [ ] 1. Vytvoriť/upraviť `prisma/schema.prisma` s modelmi `Edition`, `Route` a `Sponsor` vrátane indexov a kaskádového mazania.
-- [ ] 2. Vytvoriť `$lib/server/db.ts` s bezpečným globálnym singletonom pre PrismaClient.
-- [ ] 3. Vytvoriť `prisma/seed.ts`, ktorý naplní databázu aktuálnym ročníkom (2026, `isCurrent: true`, trasy 5 km a 10 km) a jedným archivovaným ročníkom (2025).
-- [ ] 4. Pridať `"prisma": { "seed": "bun prisma/seed.ts" }` do `package.json`.
-- [ ] 5. Spustiť migráciu cez `bunx prisma migrate dev --name init_editions` a aplikovať seed.
-- [ ] 6. Spustiť `bun run check` na overenie, že Prisma typy sú korektne vygenerované a importovateľné.
+- [x] 1. Vytvoriť/upraviť `prisma/schema.prisma` s modelmi `Edition`, `Route` a `Sponsor` vrátane indexov a kaskádového mazania.
+- [x] 2. Vytvoriť `$lib/server/db.ts` s bezpečným globálnym singletonom pre PrismaClient.
+- [x] 3. Vytvoriť `prisma/seed.ts`, ktorý naplní databázu aktuálnym ročníkom (2026, `isCurrent: true`, trasy 5 km a 10 km) a jedným archivovaným ročníkom (2025).
+- [x] 4. Pridať `"prisma": { "seed": "bun prisma/seed.ts" }` do `package.json`. *(Odchýlka: Prisma 7 ignoruje tento kľúč, seed je v `prisma.config.ts` pod `migrations.seed`.)*
+- [x] 5. Spustiť migráciu cez `bunx prisma migrate dev --name init_editions` a aplikovať seed.
+- [x] 6. Spustiť `bun run check` na overenie, že Prisma typy sú korektne vygenerované a importovateľné.
 
 ## 4. Čo nerobiť (Non-Goals & Constraints)
 

@@ -1,6 +1,6 @@
 # 03-home-content-and-sponsors.md
 
-Status: ready-for-agent
+Status: done
 
 ## 1. Cieľ (Goal)
 
@@ -73,7 +73,7 @@ Doplniť domovskú stránku o obsah, ktorý dnes chýba: fotky v slideri, inform
 10. **Seed**: štatistiky aktuálneho ročníka sa pri každom spustení nahradia (seed ich vlastní). Sponzori a fotky sa seedujú len vtedy, keď je tabuľka prázdna, aby sa neprepísali zmeny z admin rozhrania.
 11. **Fotky zatiaľ mockupy**: tri SVG súbory v `static/photos/` s popisom „Ukážková fotka“. Reálne fotky klub doplní cez seed alebo neskôr cez admin.
 
-## 6. Otvorené otázky (predvolená voľba je zvolená, potvrďte alebo zmeňte)
+## 6. Otvorené otázky (plánovanie uzavreté; body sa riešia v ďalších krokoch)
 
 1. **Memoriálne logo (`logo1.png`)**: kde ho použiť? _Predvolene: nepoužité. Navrhujem ho dať pod hlavné logo v `Hero` alebo do päty stránky._
 2. **Reálne fotky**: zatiaľ sú mockupy. _Predvolene: nahradiť ich reálnymi fotkami, keď ich klub pošle (URL alebo súbory do `static/photos/`)._
