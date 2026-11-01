@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Edition } from '../../generated/prisma/client';
-	import Button from '#lib/components/atoms/Button.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import { formatEventDate, getCountdown } from '../../utils/dateUtils';
 	import { getHeroCta } from '../../utils/front/heroCta';
 	import { LOGO_URL, SITE_NAME } from '../../constants';
@@ -57,7 +57,7 @@
 
 	{#if cta}
 		<div class="mt-8">
-			<Button href={cta.href}>{cta.label}</Button>
+			<Button href={cta.href} size="lg" class="h-11 px-6 text-base">{cta.label}</Button>
 		</div>
 	{/if}
 </section>

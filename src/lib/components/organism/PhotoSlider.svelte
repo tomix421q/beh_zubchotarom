@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '../atoms/Button.svelte';
 	import PauseButton from '../atoms/PauseButton.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
 
 	type Photo = { id: number; url: string; alt: string };
 
@@ -66,12 +66,18 @@
 		<div class="flex items-center gap-1">
 			<Button
 				variant="ghost"
+				size="icon"
 				aria-label="Predchádzajúca fotka"
 				onclick={() => showPhoto(index - 1)}
 			>
 				&lsaquo;
 			</Button>
-			<Button variant="ghost" aria-label="Ďalšia fotka" onclick={() => showPhoto(index + 1)}>
+			<Button
+				variant="ghost"
+				size="icon"
+				aria-label="Ďalšia fotka"
+				onclick={() => showPhoto(index + 1)}
+			>
 				&rsaquo;
 			</Button>
 		</div>

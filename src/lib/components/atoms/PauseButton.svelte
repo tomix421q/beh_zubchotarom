@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from './Button.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
 
 	let { isPaused, label, onclick }: { isPaused: boolean; label: string; onclick: () => void } =
 		$props();
@@ -7,7 +7,7 @@
 
 <Button
 	variant="ghost"
-	class="p-2"
+	size="icon"
 	aria-label={isPaused ? `Spustiť ${label}` : `Pozastaviť ${label}`}
 	{onclick}
 >

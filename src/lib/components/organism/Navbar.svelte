@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Button from '#lib/components/atoms/Button.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import { LOGO_URL, SITE_NAME } from '../../constants';
 
 	const sectionLinks = [
@@ -30,6 +30,7 @@
 
 		<Button
 			variant="ghost"
+			size="icon"
 			class="md:hidden"
 			aria-expanded={isMenuOpen}
 			aria-controls="mobile-menu"

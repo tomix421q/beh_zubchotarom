@@ -14,7 +14,9 @@
   - Každá sekcia a karta nad pozadím je glass karta: trieda `.glassCard` z `src/lib/styles/theme.css`. Novú kartu nerob vlastným `bg-*`.
   - Farby sa menia len v tokenoch v `src/lib/styles/theme.css`. Nová farba znamená nový token, nie priamu hodnotu v komponente.
   - Dlhý formátovaný text (`infoHtml`, propozície) je v `prose prose-invert`, inak je na tmavom pozadí nečitateľný.
-  - Hlavná akcia je `Button` variant `primary`, sekundárna variant `ghost`.
+  - Tlačidlá sú shadcn `Button` z `#lib/components/ui/button/index.js`. Hlavná akcia je variant `default` (zelená `primary`), sekundárna `ghost`, ikonové tlačidlá majú `size="icon"`.
+  - Paleta sa berie z shadcn-svelte neutral dark (oficiálne hodnoty z dokumentácie). Brand zelená je shadcn `chart-2` (`oklch(0.696 0.17 162.48)`). Karty, sekundárne a akcentové plochy zostávajú priesvitné kvôli glass efektu.
+  - Stránka je vždy tmavá: `dark` trieda je na koreňovom layoute a `dark:` varianty sa riadia touto triedou, nie systémovým režimom.
 - **Tvorba nových komponentov:**
   - Komponenty organizuj podľa veľkosti do `$lib/components/[atoms,molecules,organism]`.
   - Zváž použitie čistých `$props()` verzus kompozíciu cez Svelte 5 snippets (`Snippet`, `{@render children()}`).
