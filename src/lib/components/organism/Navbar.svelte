@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { cn } from '#lib/utils/ui.js';
 	import { LOGO_URL, SITE_NAME } from '../../constants';
 
 	const sectionLinks = [
@@ -12,12 +14,29 @@
 	];
 
 	let isMenuOpen = $state(false);
+
+	// resolve() can give relative links (home is "./"), so they are made absolute before comparing.
+	// Home only matches exactly; the other sections also match their sub-pages
+	function isActive(href: string) {
+		const path = new URL(href, page.url.href).pathname;
+
+		return path === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(path);
+	}
 </script>
 
 {#snippet sectionLinkItems(linkClass: string)}
 	{#each sectionLinks as link (link.href)}
+		{@const active = isActive(link.href)}
 		<li>
-			<a href={link.href} class={linkClass} onclick={() => (isMenuOpen = false)}>{link.label}</a>
+			<a
+				href={link.href}
+				class={cn(
+					linkClass,
+					active && 'font-semibold text-foreground underline underline-offset-4'
+				)}
+				aria-current={active ? 'page' : undefined}
+				onclick={() => (isMenuOpen = false)}>{link.label}</a
+			>
 		</li>
 	{/each}
 {/snippet}
