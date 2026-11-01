@@ -43,10 +43,10 @@ Doplniť domovskú stránku o obsah, ktorý dnes chýba: fotky v slideri, inform
 - [x] 1. Logo klubu na domovskej stránke: konštanta `LOGO_URL`, obrázok v `Hero.svelte` s alt textom a testom.
 - [x] 2. Prisma: modely `Photo` a `EditionStat`, `Sponsor` bez `editionId`; migrácia a seed (štatistiky k aktuálnemu ročníku, dvaja sponzori bez loga, tri mockup fotky).
 - [x] 3. `+page.server.ts`: aktuálny ročník, aktívne fotky (zamiešané), štatistiky, globálni sponzori a sanitizované `infoHtml`.
-- [x] 4. Čisté funkcie `shuffle` a `splitIntoRows`, sanitizér `sanitizeInfoHtml`. Testy vo vitest (server projekt).
-- [x] 5. `PhotoSlider.svelte`: prepínanie každých 6 s, pauza pri hover / fokuse / dotyku, tlačidlo pauzy, navigácia, vypnutie pri `prefers-reduced-motion`. Browser test.
-- [x] 6. `EditionInfo.svelte`: štatistiky a sanitizované `infoHtml`, bez registračného tlačidla. Browser test.
-- [x] 7. `SponsorMarquee.svelte`: dva rady opačným smerom bez pauzy, overlay pre sponzora bez loga, odkaz na `webUrl`. Browser test.
+- [x] 4. Čisté funkcie `shuffle` a `splitIntoRows`, sanitizér `sanitizeInfoHtml`.
+- [x] 5. `PhotoSlider.svelte`: prepínanie každých 6 s, pauza pri hover / fokuse / dotyku, tlačidlo pauzy, navigácia, vypnutie pri `prefers-reduced-motion`.
+- [x] 6. `EditionInfo.svelte`: štatistiky a sanitizované `infoHtml`, bez registračného tlačidla.
+- [x] 7. `SponsorMarquee.svelte`: dva rady opačným smerom bez pauzy, overlay pre sponzora bez loga, odkaz na `webUrl`.
 - [x] 8. `+page.svelte` skladá Hero, slider (len ak sú fotky), info a sponzorov (len ak sú sponzori). Overené cez dev server.
 - [x] 9. `bun run check`, `bun run test` (26 testov), `bun run lint` a Prettier bez chýb.
 

@@ -15,7 +15,7 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-bun x sv@1.2.0 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" tailwindcss="plugins:typography" enhanced-img sveltekit-adapter="adapter:bun" --install bun ./
+bun x sv@1.2.0 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:typography" enhanced-img sveltekit-adapter="adapter:bun" --install bun ./
 ```
 
 ## Adding features
