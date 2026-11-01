@@ -1,30 +1,20 @@
-import { error, fail, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { requireAdmin } from '../../../../lib/server/auth';
 import { prisma } from '../../../../lib/server/db';
 import {
+	findEditionByYear,
 	isYearTaken,
 	readEditionFields,
 	syncCurrentEdition
 } from '../../../../lib/server/editions';
+import { readInfoHtml } from '../../../../lib/server/sanitizeInfoHtml';
 import { formatBratislavaDateTime } from '../../../../lib/utils/dateUtils';
 import type { Actions, PageServerLoad } from './$types';
-
-// Looked up by year from the URL; anything that is not an existing year is a 404
-async function findEdition(yearParam: string) {
-	const year = Number(yearParam);
-	const edition = Number.isInteger(year)
-		? await prisma.edition.findUnique({ where: { year } })
-		: null;
-
-	if (!edition) error(404, 'Ročník sa nenašiel.');
-
-	return edition;
-}
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	requireAdmin(locals);
 
-	const edition = await findEdition(params.year);
+	const edition = await findEditionByYear(params.year);
 
 	return { edition, eventDateInput: formatBratislavaDateTime(edition.eventDate) };
 };
@@ -33,7 +23,7 @@ export const actions: Actions = {
 	saveEdition: async ({ request, locals, params }) => {
 		requireAdmin(locals);
 
-		const edition = await findEdition(params.year);
+		const edition = await findEditionByYear(params.year);
 		const fields = readEditionFields(await request.formData());
 		if ('message' in fields) return fail(400, { message: fields.message });
 
@@ -46,5 +36,27 @@ export const actions: Actions = {
 		await syncCurrentEdition();
 
 		redirect(303, `/admin/rocniky/${fields.year}`);
+	},
+
+	// An unchecked checkbox is not sent at all, so its absence means the registration is closed
+	saveRegistration: async ({ request, locals, params }) => {
+		requireAdmin(locals);
+
+		const edition = await findEditionByYear(params.year);
+		const formData = await request.formData();
+
+		await prisma.edition.update({
+			where: { id: edition.id },
+			data: { registrationOpen: formData.has('registrationOpen') }
+		});
+	},
+
+	saveInfo: async ({ request, locals, params }) => {
+		requireAdmin(locals);
+
+		const edition = await findEditionByYear(params.year);
+		const infoHtml = readInfoHtml(await request.formData(), 'html');
+
+		await prisma.edition.update({ where: { id: edition.id }, data: { infoHtml } });
 	}
 };

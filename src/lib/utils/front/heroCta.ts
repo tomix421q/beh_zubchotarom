@@ -2,7 +2,7 @@ import { getDayKey } from '../dateUtils';
 
 type HeroCtaEdition = {
 	eventDate: Date;
-	registrationUrl: string | null;
+	registrationOpen: boolean;
 	resultsUrl: string | null;
 };
 
@@ -14,7 +14,5 @@ export function getHeroCta(edition: HeroCtaEdition, now: Date): HeroCta | null {
 		return edition.resultsUrl ? { label: 'Výsledky', href: edition.resultsUrl } : null;
 	}
 
-	return edition.registrationUrl
-		? { label: 'Registrovať sa', href: edition.registrationUrl }
-		: null;
+	return edition.registrationOpen ? { label: 'Registrovať sa', href: '/registracia' } : null;
 }

@@ -11,16 +11,19 @@ datasource db {
 }
 
 model Edition {
-  id               Int      @id @default(autoincrement())
-  year             Int      @unique
+  id               Int           @id @default(autoincrement())
+  year             Int           @unique
   editionNumber    Int
   eventDate        DateTime
-  isCurrent        Boolean  @default(false)
+  isCurrent        Boolean       @default(false)
   registrationUrl  String?
   resultsUrl       String?
   galleryUrl       String?
   propositionsHtml String?
   infoHtml         String?
+  registrationOpen Boolean       @default(false)
+  registrationHtml String?
+  heroTitle        String?
   routes           Route[]
   stats            EditionStat[]
 }

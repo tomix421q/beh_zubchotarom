@@ -1,3 +1,8 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 @import './theme.css';
+
+/* Warning text from the editor; global because it arrives through {@html} */
+.notice {
+	@apply text-destructive;
+}

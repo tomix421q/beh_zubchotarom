@@ -1,14 +1,34 @@
+import { error } from '@sveltejs/kit';
 import { FIRST_EDITION_YEAR } from '../constants';
 import { parseBratislavaDateTime } from '../utils/dateUtils';
 import { prisma } from './db';
 
-export type EditionFields = { year: number; editionNumber: number; eventDate: Date };
+export type EditionFields = {
+	year: number;
+	editionNumber: number;
+	eventDate: Date;
+	heroTitle: string | null;
+};
+
+// Looked up by year from the URL; anything that is not an existing year is a 404
+export async function findEditionByYear(yearParam: string) {
+	const year = Number(yearParam);
+	const edition = Number.isInteger(year)
+		? await prisma.edition.findUnique({ where: { year } })
+		: null;
+
+	if (!edition) error(404, 'Ročník sa nenašiel.');
+
+	return edition;
+}
 
 // Validates the form shared by create and save; returns the first problem found, in Slovak, for the user
 export function readEditionFields(formData: FormData): EditionFields | { message: string } {
 	const year = Number(formData.get('year'));
 	const editionNumber = Number(formData.get('editionNumber'));
 	const eventDate = parseBratislavaDateTime(String(formData.get('eventDate') ?? ''));
+	// An empty title means the default "Beh Zubrohlava + year" is shown in the Hero
+	const heroTitle = String(formData.get('heroTitle') ?? '').trim() || null;
 
 	if (!Number.isInteger(year) || year < FIRST_EDITION_YEAR) {
 		return { message: `Rok musí byť celé číslo od ${FIRST_EDITION_YEAR}.` };
@@ -22,7 +42,7 @@ export function readEditionFields(formData: FormData): EditionFields | { message
 		return { message: 'Zadajte platný dátum a čas.' };
 	}
 
-	return { year, editionNumber, eventDate };
+	return { year, editionNumber, eventDate, heroTitle };
 }
 
 // Years are unique; exceptId lets an edition keep its own year when it is saved

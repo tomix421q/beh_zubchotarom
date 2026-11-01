@@ -46,6 +46,9 @@
 	"dependencies": {
 		"@prisma/adapter-libsql": "^7.10.1",
 		"@prisma/client": "^7.10.1",
+		"@tiptap/core": "^3.32.2",
+		"@tiptap/pm": "^3.32.2",
+		"@tiptap/starter-kit": "^3.32.2",
 		"clsx": "^2.1.1",
 		"sanitize-html": "^2.18.1",
 		"tailwind-merge": "^3.7.0"

@@ -16,7 +16,8 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 			? {
 					...edition,
 					infoHtml: sanitizeInfoHtml(edition.infoHtml),
-					propositionsHtml: sanitizeInfoHtml(edition.propositionsHtml)
+					propositionsHtml: sanitizeInfoHtml(edition.propositionsHtml),
+					registrationHtml: sanitizeInfoHtml(edition.registrationHtml)
 				}
 			: null
 	};

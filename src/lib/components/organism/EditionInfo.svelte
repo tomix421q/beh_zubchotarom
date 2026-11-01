@@ -1,11 +1,11 @@
 <script lang="ts">
 	type Stat = { id: number; label: string; value: string };
 
-	let { stats, infoHtml }: { stats: Stat[]; infoHtml: string | null } = $props();
+	let { stats }: { stats: Stat[] } = $props();
 </script>
 
-<section class="glassCard flex flex-col gap-8 p-6">
-	{#if stats.length > 0}
+{#if stats.length > 0}
+	<section class="glassCard p-6">
 		<dl class="grid grid-cols-2 gap-4 sm:grid-cols-3">
 			{#each stats as stat (stat.id)}
 				<div class="rounded-lg border border-border bg-card p-4 text-center">
@@ -14,11 +14,5 @@
 				</div>
 			{/each}
 		</dl>
-	{/if}
-
-	{#if infoHtml}
-		<!-- infoHtml is sanitized on the server before it reaches the page -->
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		<div class="prose max-w-none text-foreground prose-invert">{@html infoHtml}</div>
-	{/if}
-</section>
+	</section>
+{/if}
