@@ -11,7 +11,7 @@
 
 <section class="glassCard flex flex-col gap-6 p-6">
 	<h1 class="text-3xl font-bold text-foreground">Trasy</h1>
-	{#if data.edition.routes.length > 0}
+	{#if data.edition?.routes.length}
 		<ul class="grid gap-4 sm:grid-cols-2">
 			{#each data.edition.routes as route (route.id)}
 				<li class="rounded-lg border border-border bg-card p-4">

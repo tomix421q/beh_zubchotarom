@@ -1,8 +1,14 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
+import { error } from '@sveltejs/kit';
 import { ADMIN_PASSWORD, ADMIN_SESSION_SECRET } from '$app/env/private';
 
 export const ADMIN_COOKIE = 'admin_session';
 export const SESSION_SECONDS = 8 * 60 * 60;
+
+// Every admin load and action calls this, the UI check alone is not enough
+export function requireAdmin(locals: App.Locals): void {
+	if (!locals.isAdmin) error(404, 'Stránka sa nenašla.');
+}
 
 function requireSecret(): string {
 	if (!ADMIN_SESSION_SECRET) throw new Error('ADMIN_SESSION_SECRET is not set');

@@ -51,7 +51,7 @@
 					type="password"
 					required
 					autocomplete="current-password"
-					class="h-9 rounded-md border border-input bg-transparent px-3 text-sm font-normal outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+					class="inputNormalize"
 				/>
 			</label>
 

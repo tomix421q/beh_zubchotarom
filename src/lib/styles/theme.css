@@ -82,4 +82,8 @@
 	.glassCard {
 		@apply rounded-xl border border-border bg-card backdrop-blur-md;
 	}
+
+	.inputNormalize {
+		@apply h-9 rounded-md border border-input bg-transparent px-3 text-sm font-normal outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+	}
 }

@@ -12,7 +12,7 @@ Pridať admin modul, cez ktorý klub sám upravuje obsah webu bez zásahu do kó
 4. spravovať štatistiky ako zoznam `kľúč: hodnota`,
 5. nahrávať fotky do slidera,
 6. spravovať sponzorov: logo alebo len názov, a výber horného alebo dolného radu,
-7. vytvárať, upravovať a mazať ročníky vrátane starých (prvý bol v roku 2015) a určiť, ktorý je aktuálny,
+7. vytvárať, upravovať a mazať ročníky vrátane starých (prvý bol v roku 2015), aktuálny je vždy najnovší,
 8. mať pre každý ročník verejnú stránku (archív) s jeho údajmi a odkazom na fotogalériu na Google Disku (`galleryUrl`).
 
 ## 2. Kontrakty & Architektúra (Contracts)
@@ -39,7 +39,7 @@ Pridať admin modul, cez ktorý klub sám upravuje obsah webu bez zásahu do kó
 ### Ročníky
 
 - Admin vie ročník **vytvoriť** (rok, poradové číslo, dátum), **upraviť** a **zmazať** (kaskádovo sa zmažú trasy a štatistiky). Rok je unikátny a najskôr `FIRST_EDITION_YEAR = 2015` (konštanta v `constants.ts`). Poradové číslo sa predvyplní ako `rok - 2014`, ale dá sa zmeniť (ak sa nejaký rok nebežalo).
-- Aktuálny ročník je práve jeden (`isCurrent`). Nastavenie nového aktuálneho prebehne v jednej transakcii, ktorá zruší príznak ostatným. Aktuálny ročník sa nedá zmazať, najprv sa musí určiť iný.
+- Aktuálny ročník (`isCurrent`) je vždy ten s najvyšším rokom; admin ho nevyberá ani nenastavuje starší. Po každej zmene ročníkov (vytvoriť, upraviť, zmazať) sa príznak prepočíta v jednej transakcii. Zmazanie najnovšieho ročníka posunie aktuálny na predchádzajúci.
 - Prvý ročník na čistej databáze vytvorí admin; **produkčná databáza sa nesejduje**. Preto `+layout.server.ts` už pri chýbajúcom aktuálnom ročníku nevyhadzuje 404, ale vráti `edition: null`, inak by neboli dostupné ani `/admin` a neviditeľné tlačidlo. 404 pre domovskú stránku zostáva v `+page.server.ts`.
 - Verejný archív je súčasťou modulu, pozri „Verejný archív ročníkov“.
 
@@ -75,7 +75,7 @@ Nasadenie ide cez Coolify z `Dockerfile`. Kontajner sa pri každom nasadení vyt
 
 | Routa | Účel |
 | --- | --- |
-| `/admin` | prehľad: zoznam ročníkov (vytvoriť, zmazať, určiť aktuálny) a globálne sekcie: logo, fotky slidera, sponzori |
+| `/admin` | prehľad: zoznam ročníkov (vytvoriť, zmazať) a globálne sekcie: logo, fotky slidera, sponzori |
 | `/admin/rocniky/[year]` | úprava ročníka: Hero (ročník, h1, dátum), prepínač registrácie, štatistiky, `infoHtml`, `galleryUrl` |
 | `/admin/rocniky/[year]/registracia` | editor Tiptap pre `registrationHtml` tohto ročníka |
 | `/rocniky`, `/rocnik/[year]` | verejný archív ročníkov (pozri vyššie) |
@@ -98,7 +98,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 ## 3. Checklist implementácie (Kroky pre agenta)
 
 - [x] 1. Prihlásenie: `hooks.server.ts`, `locals.isAdmin`, `ADMIN_PASSWORD` / `ADMIN_SESSION_SECRET`, limit pokusov, `AdminCorner.svelte` s dialógom, prázdna stránka `/admin` s odhlásením, 404 pre neprihlásených. `.env.example`.
-- [ ] 2. Ročníky: `+layout.server.ts` bez 404 pri chýbajúcom ročníku (`edition: null`, Navbar a Hero to zvládnu), zoznam ročníkov v `/admin`, vytvoriť / upraviť / zmazať, `FIRST_EDITION_YEAR`, transakcia pre `isCurrent`, ochrana aktuálneho pred zmazaním.
+- [x] 2. Ročníky: `+layout.server.ts` bez 404 pri chýbajúcom ročníku (`edition: null`, Navbar a Hero to zvládnu), zoznam ročníkov v `/admin`, vytvoriť / upraviť / zmazať, `FIRST_EDITION_YEAR`, `isCurrent` vždy na najnovšom ročníku (prepočet v transakcii).
 - [ ] 3. Registrácia: migrácia `registrationOpen`, `registrationHtml`, úprava `getHeroCta`, verejná stránka `/registracia`, prepínač v `/admin/rocniky/[year]`.
 - [ ] 4. Tiptap: `RichTextEditor.svelte` (nadpisy, tučné, zoznamy, odkaz, štýl „upozornenie“), `/admin/rocniky/[year]/registracia`, rozšírenie sanitizéra o `span.notice`, ukladanie so sanitizáciou, rovnaký editor pre `infoHtml`.
 - [ ] 5. Štatistiky ročníka: pridať, upraviť, zmazať, zmeniť poradie (`order`); prázdny zoznam skryje sekciu (existujúce správanie).
@@ -133,7 +133,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 7. **Neviditeľné tlačidlo**: veľmi malé, v samom rohu okna nad Navbarom.
 8. **Nasadenie**: Coolify z `Dockerfile`; databáza aj obrázky na trvalom úložisku `/data`, aby prežili nové nasadenie.
 9. **Sponzori**: výber radu sa ukladá do `Sponsor.row` a nahrádza delenie podľa parity indexu.
-10. **Ročníky**: admin vytvára aj staré ročníky (od 2015). Produkčná databáza sa nesejduje, prvý ročník vznikne v admine.
+10. **Ročníky**: admin vytvára aj staré ročníky (od 2015). Produkčná databáza sa nesejduje, prvý ročník vznikne v admine. Aktuálny je vždy najnovší (rozhodnuté pri kroku 2, nie výber admina).
 11. **H1 a dátum**: `heroTitle` prepisuje celý nadpis (prázdny = `SITE_NAME + year`); dátum sa zadáva v čase `Europe/Bratislava` (`datetime-local`, uloží sa ako UTC).
 12. **Verejný archív** je súčasťou tohto modulu (`/rocniky`, `/rocnik/[year]`).
 13. **Fotky**: jeden globálny slider, fotky sa nahrávajú na disk servera. Minulé ročníky nemajú vlastné fotky v aplikácii, len odkaz `galleryUrl` na Google Disk. **Sponzori** sú globálni mimo ročníkov.

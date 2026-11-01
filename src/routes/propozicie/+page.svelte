@@ -11,7 +11,7 @@
 
 <section class="glassCard flex flex-col gap-6 p-6">
 	<h1 class="text-3xl font-bold text-foreground">Propozície</h1>
-	{#if data.edition.propositionsHtml}
+	{#if data.edition?.propositionsHtml}
 		<!-- propositionsHtml is sanitized on the server before it reaches the page -->
 		<div class="prose max-w-none text-foreground prose-invert">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
