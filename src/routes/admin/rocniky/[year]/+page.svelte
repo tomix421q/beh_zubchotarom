@@ -99,32 +99,35 @@
 		</form>
 	</section>
 
-	<section class="glassCard flex flex-col gap-4 p-6">
-		<h2 class="text-lg font-semibold">Registrácia</h2>
+	<!-- Only the current edition takes registrations; the others never show the button -->
+	{#if data.edition.isCurrent}
+		<section class="glassCard flex flex-col gap-4 p-6">
+			<h2 class="text-lg font-semibold">Registrácia</h2>
 
-		<form method="POST" action="?/saveRegistration" use:enhance class="flex flex-col gap-4">
-			<label class="flex items-center gap-3 text-sm font-medium">
-				<input
-					name="registrationOpen"
-					type="checkbox"
-					checked={data.edition.registrationOpen}
-					class="size-4"
-				/>
-				Zobraziť tlačidlo „Registrovať sa“ v Hero
-			</label>
+			<form method="POST" action="?/saveRegistration" use:enhance class="flex flex-col gap-4">
+				<label class="flex items-center gap-3 text-sm font-medium">
+					<input
+						name="registrationOpen"
+						type="checkbox"
+						checked={data.edition.registrationOpen}
+						class="size-4"
+					/>
+					Zobraziť tlačidlo „Registrovať sa“ v Hero
+				</label>
 
-			<div class="flex justify-end">
-				<Button type="submit">Uložiť</Button>
-			</div>
-		</form>
+				<div class="flex justify-end">
+					<Button type="submit">Uložiť</Button>
+				</div>
+			</form>
 
-		<a
-			href={resolve('/admin/rocniky/[year]/registracia', { year: String(data.edition.year) })}
-			class="text-sm underline underline-offset-4 hover:text-foreground"
-		>
-			Upraviť text stránky Registrácia
-		</a>
-	</section>
+			<a
+				href={resolve('/admin/rocniky/[year]/registracia', { year: String(data.edition.year) })}
+				class="text-sm underline underline-offset-4 hover:text-foreground"
+			>
+				Upraviť text stránky Registrácia
+			</a>
+		</section>
+	{/if}
 
 	<section class="glassCard flex flex-col gap-4 p-6">
 		<div>
