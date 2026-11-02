@@ -12,7 +12,6 @@
 		{ href: resolve('/'), label: 'Domov' },
 		{ href: resolve('/propozicie'), label: 'Propozície' },
 		{ href: resolve('/trasy'), label: 'Trasy' },
-		{ href: resolve('/vysledky'), label: 'Výsledky' },
 		{ href: resolve('/rocniky'), label: 'Ročníky', activePrefix: '/rocnik' },
 		{ href: resolve('/kontakt'), label: 'Kontakt' }
 	];
