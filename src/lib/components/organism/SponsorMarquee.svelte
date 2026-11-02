@@ -8,20 +8,23 @@
 </script>
 
 {#snippet sponsorBadge(sponsor: Sponsor)}
-	{#if sponsor.logoUrl}
-		<img src={sponsor.logoUrl} alt={sponsor.name} class="h-12 w-auto object-contain" />
-	{:else}
-		<span
-			class="rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground"
-		>
-			{sponsor.name}
-		</span>
-	{/if}
+	<!-- Every sponsor gets the same card as the other sections; the name is shown only when there is no logo -->
+	<div class="glassCard flex h-20 w-44 items-center justify-center px-4">
+		{#if sponsor.logoUrl}
+			<img
+				src={sponsor.logoUrl}
+				alt={sponsor.name}
+				class="max-h-12 w-auto max-w-full object-contain"
+			/>
+		{:else}
+			<span class="text-center text-sm font-semibold text-foreground">{sponsor.name}</span>
+		{/if}
+	</div>
 {/snippet}
 
 {#snippet sponsorItems(sponsors: Sponsor[])}
 	{#each sponsors as sponsor (sponsor.id)}
-		<li class="shrink-0 px-6">
+		<li class="shrink-0 px-3">
 			{#if sponsor.webUrl}
 				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a href={sponsor.webUrl} target="_blank" rel="noopener noreferrer">
