@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '$app/forms';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import Field from '#lib/components/atoms/Field.svelte';
 	import { FIRST_EDITION_YEAR, SITE_NAME } from '../../lib/constants';
@@ -11,6 +12,20 @@
 	let year = $state(new Date().getFullYear());
 	// Suggested from the year (2015 is number 1), but the admin can still change it
 	let editionNumber = $derived(year - FIRST_EDITION_YEAR + 1);
+
+	let createDialog: HTMLDialogElement | undefined = $state();
+	let createMessage = $state('');
+
+	// The message is shown inside the dialog, because the page behind it is covered
+	const submitCreate: SubmitFunction = () => {
+		createMessage = '';
+
+		return async ({ result, update }) => {
+			if (result.type === 'failure') createMessage = String(result.data?.message ?? '');
+
+			await update();
+		};
+	};
 </script>
 
 <svelte:head>
@@ -31,9 +46,21 @@
 	{/if}
 
 	<section class="glassCard flex flex-col gap-4 p-6">
-		<div>
-			<h2 class="text-lg font-semibold">Ročníky</h2>
-			<p class="text-sm text-muted-foreground">Aktuálny je vždy ročník s najvyšším rokom.</p>
+		<div class="flex flex-wrap items-center justify-between gap-4">
+			<div>
+				<h2 class="text-lg font-semibold">Ročníky</h2>
+				<p class="text-sm text-muted-foreground">Aktuálny je vždy ročník s najvyšším rokom.</p>
+			</div>
+
+			<Button
+				size="sm"
+				onclick={() => {
+					createMessage = '';
+					createDialog?.showModal();
+				}}
+			>
+				Nový ročník
+			</Button>
 		</div>
 
 		{#if data.editions.length === 0}
@@ -81,44 +108,6 @@
 				{/each}
 			</ul>
 		{/if}
-	</section>
-
-	<section class="glassCard flex flex-col gap-4 p-6">
-		<h2 class="text-lg font-semibold">Nový ročník</h2>
-
-		<form method="POST" action="?/createEdition" use:enhance class="flex flex-col gap-4">
-			<div class="grid gap-4 sm:grid-cols-3">
-				<Field label="Rok">
-					<input
-						name="year"
-						type="number"
-						min={FIRST_EDITION_YEAR}
-						required
-						bind:value={year}
-						class="inputNormalize"
-					/>
-				</Field>
-
-				<Field label="Poradové číslo">
-					<input
-						name="editionNumber"
-						type="number"
-						min="1"
-						required
-						bind:value={editionNumber}
-						class="inputNormalize"
-					/>
-				</Field>
-
-				<Field label="Dátum a čas (Bratislava)">
-					<input name="eventDate" type="datetime-local" required class="inputNormalize" />
-				</Field>
-			</div>
-
-			<div class="flex justify-end">
-				<Button type="submit">Vytvoriť ročník</Button>
-			</div>
-		</form>
 	</section>
 
 	<section class="glassCard flex flex-col gap-4 p-6">
@@ -272,4 +261,55 @@
 			</div>
 		</form>
 	</section>
+
+	<dialog
+		bind:this={createDialog}
+		class="m-auto w-full max-w-lg rounded-xl border border-border bg-popover p-6 text-popover-foreground backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+	>
+		<form
+			method="POST"
+			action="?/createEdition"
+			use:enhance={submitCreate}
+			class="flex flex-col gap-4"
+		>
+			<h2 class="text-lg font-semibold">Nový ročník</h2>
+
+			<div class="grid gap-4 sm:grid-cols-3">
+				<Field label="Rok">
+					<input
+						name="year"
+						type="number"
+						min={FIRST_EDITION_YEAR}
+						required
+						bind:value={year}
+						class="inputNormalize"
+					/>
+				</Field>
+
+				<Field label="Poradové číslo">
+					<input
+						name="editionNumber"
+						type="number"
+						min="1"
+						required
+						bind:value={editionNumber}
+						class="inputNormalize"
+					/>
+				</Field>
+
+				<Field label="Dátum a čas">
+					<input name="eventDate" type="datetime-local" required class="inputNormalize" />
+				</Field>
+			</div>
+
+			{#if createMessage}
+				<p class="text-sm text-destructive" role="alert">{createMessage}</p>
+			{/if}
+
+			<div class="flex justify-end gap-2">
+				<Button type="button" variant="ghost" onclick={() => createDialog?.close()}>Zavrieť</Button>
+				<Button type="submit">Vytvoriť ročník</Button>
+			</div>
+		</form>
+	</dialog>
 </div>

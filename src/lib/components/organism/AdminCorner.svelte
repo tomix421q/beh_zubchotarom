@@ -3,6 +3,7 @@
 	import type { SubmitFunction } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { LockOpen } from '@lucide/svelte';
 
 	let { isAdmin }: { isAdmin: boolean } = $props();
 
@@ -24,9 +25,16 @@
 </script>
 
 {#if isAdmin}
-	<a href={resolve('/admin' as '/')} class={triggerClass}>
-		<span class="sr-only">Administrácia</span>
-	</a>
+	<!-- Only shown while logged in, so the admin is never left unsure whether the edit mode is on -->
+	<Button
+		href={resolve('/admin' as '/')}
+		variant="outline"
+		size="icon-lg"
+		aria-label="Administrácia"
+		class="fixed  -top-1 -left-1 z-50 rounded-l-none rounded-tr-none rounded-br-3xl text-primary hover:bg-primary/30! hover:text-primary"
+	>
+		<LockOpen />
+	</Button>
 {:else}
 	<button type="button" class={triggerClass} onclick={() => dialog?.showModal()}>
 		<span class="sr-only">Administrácia</span>
