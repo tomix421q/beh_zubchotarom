@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import EditionInfo from '#lib/components/organism/EditionInfo.svelte';
 	import Hero from '#lib/components/organism/Hero.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
@@ -11,10 +12,10 @@
 <svelte:head>
 	<title>Ročník {data.edition.year} · {SITE_NAME}</title>
 </svelte:head>
-<a href={resolve('/admin')} class="text-sm text-muted-foreground hover:text-foreground">
-	← Späť na administráciu
+<a href={resolve('/vysledky')} class=" text-sm text-muted-foreground hover:text-foreground">
+	← Späť na všetky ročníky
 </a>
-<div class="flex flex-col gap-10">
+<div class="mt-4 flex flex-col gap-10">
 	<Hero edition={data.edition} logoUrl={data.logoUrl}>
 		{#snippet actions()}
 			{#if data.edition.galleryUrl}
