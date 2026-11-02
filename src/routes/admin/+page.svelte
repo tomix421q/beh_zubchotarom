@@ -144,11 +144,132 @@
 					type="file"
 					accept="image/jpeg,image/png,image/webp,image/avif"
 					required
-					class="text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-secondary-foreground file:px-2 file:py-0.5 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-secondary-foreground/80"
+					class="fileInputNormalize"
 				/>
 			</Field>
 
 			<Button type="submit" size="sm">Uložiť logo</Button>
+		</form>
+	</section>
+
+	<section class="glassCard flex flex-col gap-4 p-6">
+		<div>
+			<h2 class="text-lg font-semibold">Fotky slidera</h2>
+			<p class="text-sm text-muted-foreground">
+				Zobrazia sa na domovskej stránke v poradí zľava doprava. Skryté fotky sa nezobrazia. JPEG,
+				PNG, WebP alebo AVIF do 5 MB.
+			</p>
+		</div>
+
+		{#if form?.photoMessage}
+			<p class="text-sm text-destructive" role="alert">{form.photoMessage}</p>
+		{/if}
+
+		{#if data.photos.length === 0}
+			<p class="text-muted-foreground">Zatiaľ nie sú žiadne fotky.</p>
+		{:else}
+			<ul class="grid gap-4 sm:grid-cols-2">
+				{#each data.photos as photo, index (photo.id)}
+					<li
+						class={[
+							'flex flex-col gap-3 rounded-xl border border-border p-3',
+							!photo.isActive && 'opacity-60'
+						]}
+					>
+						<img
+							src={photo.url}
+							alt={photo.alt}
+							loading="lazy"
+							class="aspect-video w-full rounded-lg border border-border object-cover"
+						/>
+
+						<p class="text-sm">
+							{photo.alt}
+							{#if !photo.isActive}
+								<span class="ml-2 text-muted-foreground">skrytá</span>
+							{/if}
+						</p>
+
+						<form method="POST" use:enhance class="flex flex-wrap items-center gap-2">
+							<input type="hidden" name="id" value={photo.id} />
+
+							<Button type="submit" formaction="?/toggleActive" variant="outline" size="sm">
+								{photo.isActive ? 'Skryť' : 'Zobraziť'}
+							</Button>
+
+							<Button
+								type="submit"
+								formaction="?/movePhoto"
+								name="direction"
+								value="up"
+								variant="ghost"
+								size="icon"
+								disabled={index === 0}
+								aria-label="Posunúť vyššie"
+							>
+								↑
+							</Button>
+
+							<Button
+								type="submit"
+								formaction="?/movePhoto"
+								name="direction"
+								value="down"
+								variant="ghost"
+								size="icon"
+								disabled={index === data.photos.length - 1}
+								aria-label="Posunúť nižšie"
+							>
+								↓
+							</Button>
+
+							<Button
+								type="submit"
+								formaction="?/deletePhoto"
+								variant="destructive"
+								size="sm"
+								onclick={(event) => {
+									if (!confirm('Naozaj zmazať túto fotku?')) event.preventDefault();
+								}}
+							>
+								Zmazať
+							</Button>
+						</form>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+
+		<form
+			method="POST"
+			action="?/uploadPhoto"
+			enctype="multipart/form-data"
+			use:enhance
+			class="grid gap-3 border-t border-border pt-4 sm:grid-cols-[1fr_1fr_auto]"
+		>
+			<Field label="Fotka">
+				<input
+					name="photo"
+					type="file"
+					accept="image/jpeg,image/png,image/webp,image/avif"
+					required
+					class="fileInputNormalize"
+				/>
+			</Field>
+
+			<Field label="Popis (alt text)">
+				<input
+					name="alt"
+					type="text"
+					required
+					placeholder="Štart hlavnej trate"
+					class="inputNormalize"
+				/>
+			</Field>
+
+			<div class="flex items-end">
+				<Button type="submit">Nahrať</Button>
+			</div>
 		</form>
 	</section>
 </div>

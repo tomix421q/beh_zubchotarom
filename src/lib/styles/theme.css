@@ -109,4 +109,9 @@
 	.inputNormalize {
 		@apply h-9 rounded-md border border-input bg-transparent px-3 text-sm font-normal outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
 	}
+
+	/* The browser's own file button is styled to look like the shadcn buttons */
+	.fileInputNormalize {
+		@apply text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-secondary-foreground file:px-2 file:py-0.5 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-secondary-foreground/80;
+	}
 }
