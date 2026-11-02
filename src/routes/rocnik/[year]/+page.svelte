@@ -11,7 +11,9 @@
 <svelte:head>
 	<title>Ročník {data.edition.year} · {SITE_NAME}</title>
 </svelte:head>
-
+<a href={resolve('/admin')} class="text-sm text-muted-foreground hover:text-foreground">
+	← Späť na administráciu
+</a>
 <div class="flex flex-col gap-10">
 	<Hero edition={data.edition} logoUrl={data.logoUrl}>
 		{#snippet actions()}

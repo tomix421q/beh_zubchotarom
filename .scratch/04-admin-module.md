@@ -132,7 +132,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 6. **Farby v Tiptape**: jeden štýl „upozornenie“ (`span.notice`), nie voľné farby.
 7. **Neviditeľné tlačidlo**: veľmi malé, v samom rohu okna nad Navbarom.
 8. **Nasadenie**: Coolify z `Dockerfile`; databáza aj obrázky na trvalom úložisku `/data`, aby prežili nové nasadenie.
-9. **Sponzori**: výber radu sa ukladá do `Sponsor.row` a nahrádza delenie podľa parity indexu.
+9. **Sponzori**: výber radu sa ukladá do `Sponsor.row` a nahrádza delenie podľa parity indexu. Logo sponzora je buď nahraný súbor, alebo https odkaz na obrázok (oboje ukladá `Sponsor.logoUrl`); bez oboch sa zobrazí názov.
 10. **Ročníky**: admin vytvára aj staré ročníky (od 2015). Produkčná databáza sa nesejduje, prvý ročník vznikne v admine. Aktuálny je vždy najnovší (rozhodnuté pri kroku 2, nie výber admina).
 11. **H1 a dátum**: `heroTitle` prepisuje celý nadpis (prázdny = `SITE_NAME + year`); dátum sa zadáva v čase `Europe/Bratislava` (`datetime-local`, uloží sa ako UTC).
 12. **Verejný archív** je súčasťou tohto modulu (`/rocniky`, `/rocnik/[year]`).

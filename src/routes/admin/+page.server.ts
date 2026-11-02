@@ -231,10 +231,23 @@ export const actions: Actions = {
 			return fail(400, { sponsorMessage: 'Neplatný rad sponzorov.' });
 		}
 
-		// An empty file input still gives a File, but with no bytes, so it means no logo
+		// The logo is either an uploaded file or a link to an image, never both, so nothing is ignored silently
+		const logoLink = String(formData.get('logoUrl') ?? '').trim() || null;
+		if (logoLink && !isHttpsUrl(logoLink)) {
+			return fail(400, { sponsorMessage: 'Odkaz na logo musí byť adresa začínajúca na https://.' });
+		}
+
+		// An empty file input still gives a File, but with no bytes, so it means no file
 		const logo = formData.get('logo');
-		let logoUrl: string | null = null;
-		if (logo instanceof File && logo.size > 0) {
+		const hasLogoFile = logo instanceof File && logo.size > 0;
+		if (hasLogoFile && logoLink) {
+			return fail(400, {
+				sponsorMessage: 'Logo nahrajte buď ako súbor, alebo zadajte odkaz, nie oboje.'
+			});
+		}
+
+		let logoUrl: string | null = logoLink;
+		if (hasLogoFile) {
 			const result = await saveImage(logo);
 			if ('message' in result) return fail(400, { sponsorMessage: result.message });
 

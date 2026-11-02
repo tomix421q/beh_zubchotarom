@@ -381,13 +381,17 @@
 				</select>
 			</Field>
 
-			<Field label="Logo (nepovinné)">
+			<Field label="Logo – súbor (nepovinné)">
 				<input
 					name="logo"
 					type="file"
 					accept="image/jpeg,image/png,image/webp,image/avif"
 					class="fileInputNormalize"
 				/>
+			</Field>
+
+			<Field label="Logo – odkaz na obrázok (nepovinné)">
+				<input name="logoUrl" type="url" placeholder="https://..." class="inputNormalize" />
 			</Field>
 
 			<div class="flex justify-end sm:col-span-2">
