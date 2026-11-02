@@ -2,6 +2,7 @@
 	import './../lib/styles/layout.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import AdminCorner from '#lib/components/organism/AdminCorner.svelte';
+	import Footer from '#lib/components/organism/Footer.svelte';
 	import Navbar from '#lib/components/organism/Navbar.svelte';
 	import { afterNavigate } from '$app/navigation';
 	import type { LayoutProps } from './$types';
@@ -23,10 +24,12 @@
 <div class="min-h-dvh bg-[url(/bg.jpg)] bg-cover bg-center">
 	<div class="dark flex min-h-dvh flex-col bg-background/60 text-foreground">
 		<AdminCorner isAdmin={data.isAdmin} />
-		<Navbar logoUrl={data.logoUrl} sponsors={data.sponsors} />
+		<Navbar logoUrl={data.logoUrl} />
 
 		<main class="pageContainer flex-1 py-6 sm:py-10">
 			{@render children()}
 		</main>
+
+		<Footer sponsors={data.sponsors} />
 	</div>
 </div>

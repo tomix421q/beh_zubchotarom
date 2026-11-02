@@ -3,17 +3,9 @@
 	import { page } from '$app/state';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { cn } from '#lib/utils/ui.js';
-	import type { Sponsor } from '../../generated/prisma/client';
 	import { SITE_NAME } from '../../constants';
-	import SponsorMarquee from './SponsorMarquee.svelte';
 
-	let { logoUrl, sponsors }: { logoUrl: string; sponsors: Sponsor[] } = $props();
-
-	// Each sponsor row keeps the order set in the admin, the sponsors are already sorted
-	const sponsorRows = $derived([
-		sponsors.filter((sponsor) => sponsor.row === 'top'),
-		sponsors.filter((sponsor) => sponsor.row === 'bottom')
-	]);
+	let { logoUrl }: { logoUrl: string } = $props();
 
 	// activePrefix lets a link stay active on pages that live under another path, like /rocnik/2025 for Ročníky
 	const sectionLinks = [
@@ -101,11 +93,5 @@
 		<ul id="mobile-menu" class="pageContainer flex flex-col border-t border-border py-2 md:hidden">
 			{@render sectionLinkItems('block py-3 text-foreground')}
 		</ul>
-	{/if}
-
-	{#if sponsors.length > 0}
-		<div class="border-t border-border py-3">
-			<SponsorMarquee rows={sponsorRows} />
-		</div>
 	{/if}
 </header>

@@ -47,7 +47,7 @@ Pridať admin modul, cez ktorý klub sám upravuje obsah webu bez zásahu do kó
 
 - `/rocniky`: zoznam všetkých ročníkov od najnovšieho (rok, poradové číslo, dátum, odkaz). Navbar dostane odkaz „Ročníky“.
 - `/rocnik/[year]`: stránka ročníka zložená z existujúcich komponentov: `Hero` (ročník, h1, dátum; pri minulom ročníku bez odpočtu a s odkazom na výsledky podľa `resultsUrl`) a `EditionInfo` (štatistiky a `infoHtml`). Ak je vyplnené `galleryUrl`, zobrazí sa tlačidlo „Fotogaléria“ (otvorí Google Disk v novom okne, `rel="noopener noreferrer"`). Slider tu nie je. Neexistujúci rok vráti 404.
-- Slider patrí len na domovskú stránku. Sponzori sú globálne a zobrazujú sa v hlavičke na všetkých stránkach.
+- Slider patrí len na domovskú stránku. Sponzori sú globálne a zobrazujú sa v pätičke na všetkých stránkach.
 - Domovská stránka ostáva aktuálnym ročníkom so slidrom globálnych fotiek.
 - Stránka ročníka je verejná hneď po vytvorení v admine.
 
@@ -115,7 +115,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 - Žiadne používateľské účty, roly ani registrácia adminov. Je jedno spoločné heslo.
 - Neriešiť registračný formulár, tlačidlo na externý formulár ani ukladanie prihlášok bežcov. `/registracia` je zatiaľ len informačná stránka.
 - Neriešiť správu trás, `propositionsHtml` ani samotné výsledky (len odkaz `resultsUrl`).
-- Neriešiť fotky ani sponzorov per ročník. Slider je globálny a len na domovskej stránke; sponzori sú globálni a v hlavičke na všetkých stránkach. Fotky ročníkov ostávajú na Google Disku, aplikácia ich nenahráva.
+- Neriešiť fotky ani sponzorov per ročník. Slider je globálny a len na domovskej stránke; sponzori sú globálni a v pätičke na všetkých stránkach. Fotky ročníkov ostávajú na Google Disku, aplikácia ich nenahráva.
 - Neriešiť CI/CD ani konfiguráciu samotného Coolify; modul pripraví `Dockerfile` a opíše, čo treba v Coolify nastaviť.
 - Neriešiť orezávanie ani zmenu veľkosti obrázkov (prípadne neskôr cez `sharp`).
 - Neposielať heslo ani token v URL alebo `localStorage`. Len `httpOnly` cookie.

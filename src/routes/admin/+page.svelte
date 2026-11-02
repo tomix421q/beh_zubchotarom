@@ -272,7 +272,7 @@
 		<div>
 			<h2 class="text-lg font-semibold">Sponzori</h2>
 			<p class="text-sm text-muted-foreground">
-				Zobrazia sa v hlavičke na všetkých stránkach, v dvoch radoch. Sponzor s logom sa zobrazí ako
+				Zobrazia sa v pätičke na všetkých stránkach, v dvoch radoch. Sponzor s logom sa zobrazí ako
 				logo, bez loga ako názov. Logo: JPEG, PNG, WebP alebo AVIF do 5 MB.
 			</p>
 		</div>
