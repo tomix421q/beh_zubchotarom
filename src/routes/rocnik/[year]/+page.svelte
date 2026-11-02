@@ -13,19 +13,25 @@
 </svelte:head>
 
 <div class="flex flex-col gap-10">
-	<Hero edition={data.edition} logoUrl={data.logoUrl} />
+	<Hero edition={data.edition} logoUrl={data.logoUrl}>
+		{#snippet actions()}
+			{#if data.edition.galleryUrl}
+				<Button
+					href={data.edition.galleryUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					size="lg"
+					class="h-11 px-6 text-base"
+				>
+					Fotogaléria
+				</Button>
+			{/if}
+		{/snippet}
+	</Hero>
 
 	<EditionInfo
 		year={data.edition.year}
 		stats={data.edition.stats}
 		infoHtml={data.edition.infoHtml}
 	/>
-
-	{#if data.edition.galleryUrl}
-		<div class="flex justify-center">
-			<Button href={data.edition.galleryUrl} target="_blank" rel="noopener noreferrer" size="lg">
-				Fotogaléria
-			</Button>
-		</div>
-	{/if}
 </div>

@@ -1,11 +1,14 @@
 <script lang="ts">
 	import type { Edition } from '../../generated/prisma/client';
+	import type { Snippet } from 'svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { formatEventDate, getCountdown } from '../../utils/dateUtils';
 	import { getHeroCta } from '../../utils/front/heroCta';
 	import { SITE_NAME } from '../../constants';
 
-	let { edition, logoUrl }: { edition: Edition; logoUrl: string } = $props();
+	// actions is an optional row of extra buttons, shown next to the CTA
+	let { edition, logoUrl, actions }: { edition: Edition; logoUrl: string; actions?: Snippet } =
+		$props();
 
 	let now = $state(Date.now());
 
@@ -54,9 +57,12 @@
 		</ul>
 	{/if}
 
-	{#if cta}
-		<div class="mt-8">
-			<Button href={cta.href} size="lg" class="h-11 px-6 text-base">{cta.label}</Button>
+	{#if cta || actions}
+		<div class="mt-8 flex flex-wrap justify-center gap-3">
+			{#if cta}
+				<Button href={cta.href} size="lg" class="h-11 px-6 text-base">{cta.label}</Button>
+			{/if}
+			{@render actions?.()}
 		</div>
 	{/if}
 </section>
