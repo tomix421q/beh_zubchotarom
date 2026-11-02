@@ -67,6 +67,8 @@ model Sponsor {
   order   Int     @default(0)
   // "top" or "bottom", the row of the sponsor marquee the sponsor is shown in
   row     String  @default("top")
+  // A main sponsor gets a small "Hlavný sponzor" label under the logo
+  isMain  Boolean @default(false)
 }
 
 model Photo {

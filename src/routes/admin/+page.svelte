@@ -301,7 +301,12 @@
 								{/if}
 
 								<div>
-									<p class="font-semibold">{sponsor.name}</p>
+									<p class="font-semibold">
+										{sponsor.name}
+										{#if sponsor.isMain}
+											<span class="ml-2 text-sm font-normal text-muted-foreground">hlavný</span>
+										{/if}
+									</p>
 									{#if sponsor.webUrl}
 										<p class="truncate text-sm text-muted-foreground">{sponsor.webUrl}</p>
 									{/if}
@@ -312,6 +317,10 @@
 
 									<Button type="submit" formaction="?/moveSponsorRow" variant="outline" size="sm">
 										{sponsor.row === 'top' ? 'Do dolného radu' : 'Do horného radu'}
+									</Button>
+
+									<Button type="submit" formaction="?/toggleMain" variant="outline" size="sm">
+										{sponsor.isMain ? 'Zrušiť hlavného' : 'Označiť ako hlavného'}
 									</Button>
 
 									<Button
@@ -393,6 +402,11 @@
 			<Field label="Logo – odkaz na obrázok (nepovinné)">
 				<input name="logoUrl" type="url" placeholder="https://..." class="inputNormalize" />
 			</Field>
+
+			<label class="flex items-center gap-2 text-sm font-medium sm:col-span-2">
+				<input name="isMain" type="checkbox" class="size-4" />
+				Hlavný sponzor (na stránke sa zobrazí nenápadný popis)
+			</label>
 
 			<div class="flex justify-end sm:col-span-2">
 				<Button type="submit">Pridať sponzora</Button>

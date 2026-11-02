@@ -254,6 +254,8 @@ export const actions: Actions = {
 			logoUrl = result.url;
 		}
 
+		const isMain = formData.get('isMain') === 'on';
+
 		// The new sponsor goes to the end. The max is used instead of a count,
 		// so a gap left by a delete is never reused
 		try {
@@ -261,7 +263,14 @@ export const actions: Actions = {
 				const maxOrder = await tx.sponsor.aggregate({ _max: { order: true } });
 
 				await tx.sponsor.create({
-					data: { name, webUrl, logoUrl, row, order: (maxOrder._max.order ?? -1) + 1 }
+					data: {
+						name,
+						webUrl,
+						logoUrl,
+						row,
+						isMain,
+						order: (maxOrder._max.order ?? -1) + 1
+					}
 				});
 			});
 		} catch (cause) {
@@ -269,6 +278,16 @@ export const actions: Actions = {
 			await deleteUpload(logoUrl);
 			throw cause;
 		}
+	},
+
+	// The main sponsor flag only changes the label under the logo, the sponsor keeps its row and place
+	toggleMain: async ({ request, locals }) => {
+		requireAdmin(locals);
+
+		const sponsor = await findSponsorFromForm(await request.formData());
+		if (!sponsor) return fail(404, { sponsorMessage: 'Sponzor sa nenašiel.' });
+
+		await prisma.sponsor.update({ where: { id: sponsor.id }, data: { isMain: !sponsor.isMain } });
 	},
 
 	// A sponsor moved to the other row goes to its end, so it never takes the place of a sponsor already there

@@ -1,5 +1,11 @@
 <script lang="ts">
-	type Sponsor = { id: number; name: string; logoUrl: string | null; webUrl: string | null };
+	type Sponsor = {
+		id: number;
+		name: string;
+		logoUrl: string | null;
+		webUrl: string | null;
+		isMain: boolean;
+	};
 
 	// The first row moves left and the second moves right; both run all the time
 	let { rows }: { rows: Sponsor[][] } = $props();
@@ -8,12 +14,17 @@
 </script>
 
 {#snippet sponsorBadge(sponsor: Sponsor)}
-	<!-- The logo stands alone; the name is shown only when there is no logo -->
-	{#if sponsor.logoUrl}
-		<img src={sponsor.logoUrl} alt={sponsor.name} class="h-12 w-auto max-w-40 object-contain" />
-	{:else}
-		<span class="text-center text-sm font-semibold text-foreground">{sponsor.name}</span>
-	{/if}
+	<!-- The logo stands alone; the name is shown only when there is no logo. The main sponsor gets a small label under it -->
+	<div class="flex flex-col items-center gap-1">
+		{#if sponsor.logoUrl}
+			<img src={sponsor.logoUrl} alt={sponsor.name} class="h-20 w-auto max-w-60 object-contain" />
+		{:else}
+			<span class="text-center text-base font-semibold text-foreground">{sponsor.name}</span>
+		{/if}
+		{#if sponsor.isMain}
+			<span class="text-xs text-muted-foreground">Hlavný sponzor</span>
+		{/if}
+	</div>
 {/snippet}
 
 {#snippet sponsorItems(sponsors: Sponsor[])}
