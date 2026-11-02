@@ -16,7 +16,7 @@
 	<footer class="pageContainer mt-12 pb-8 lg:mt-24">
 		<section class="glassCard flex flex-col gap-6 p-6">
 			<h2 class="text-center text-lg font-semibold tracking-wider text-foreground">
-				Sponzori a podporili nás
+				Sponzori
 			</h2>
 			<SponsorMarquee rows={sponsorRows} />
 		</section>
