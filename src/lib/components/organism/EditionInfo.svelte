@@ -6,7 +6,7 @@
 
 {#if stats.length > 0}
 	<section class="glassCard p-6">
-		<h2 class="mb-6 text-center text-lg font-semibold text-foreground">Ročník {year} v číslach</h2>
+		<h2 class="mb-5 text-center text-lg font-semibold text-foreground tracking-wider">Ročník {year} v číslach</h2>
 		<dl class="grid grid-cols-2 gap-4 sm:grid-cols-3">
 			{#each stats as stat (stat.id)}
 				<div class="rounded-lg border border-border bg-card p-4 text-center">

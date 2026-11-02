@@ -35,7 +35,7 @@
 {/snippet}
 
 <section aria-label="Partneri a sponzori" class="glassCard flex flex-col gap-4 p-6">
-	<h2 class="mb-2 text-center text-lg font-semibold text-foreground">Sponzori</h2>
+	<h2 class="mb-5 text-center text-lg font-semibold text-foreground tracking-wider">Sponzori</h2>
 	{#each rows as row, rowIndex (rowIndex)}
 		{#if row.length > 0}
 			<div class="overflow-hidden">
