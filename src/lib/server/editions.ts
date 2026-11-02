@@ -9,9 +9,10 @@ export type EditionFields = {
 	eventDate: Date;
 	heroTitle: string | null;
 	galleryUrl: string | null;
+	resultsUrl: string | null;
 };
 
-// The gallery lives on Google Drive, so only an absolute https link is accepted
+// The gallery and the results are external pages, so only an absolute https link is accepted
 function isHttpsUrl(value: string): boolean {
 	try {
 		return value.startsWith('https://') && new URL(value).protocol === 'https:';
@@ -41,6 +42,8 @@ export function readEditionFields(formData: FormData): EditionFields | { message
 	const heroTitle = String(formData.get('heroTitle') ?? '').trim() || null;
 	// An empty gallery means the archive page shows no gallery button
 	const galleryUrl = String(formData.get('galleryUrl') ?? '').trim() || null;
+	// An empty results link means the Hero shows no results button after the event day
+	const resultsUrl = String(formData.get('resultsUrl') ?? '').trim() || null;
 
 	if (!Number.isInteger(year) || year < FIRST_EDITION_YEAR) {
 		return { message: `Rok musí byť celé číslo od ${FIRST_EDITION_YEAR}.` };
@@ -58,7 +61,11 @@ export function readEditionFields(formData: FormData): EditionFields | { message
 		return { message: 'Odkaz na galériu musí byť adresa začínajúca na https://.' };
 	}
 
-	return { year, editionNumber, eventDate, heroTitle, galleryUrl };
+	if (resultsUrl && !isHttpsUrl(resultsUrl)) {
+		return { message: 'Odkaz na výsledky musí byť adresa začínajúca na https://.' };
+	}
+
+	return { year, editionNumber, eventDate, heroTitle, galleryUrl, resultsUrl };
 }
 
 // Years are unique; exceptId lets an edition keep its own year when it is saved

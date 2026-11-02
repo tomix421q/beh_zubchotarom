@@ -9,11 +9,11 @@
 </script>
 
 <svelte:head>
-	<title>Ročníky · {SITE_NAME}</title>
+	<title>Všetky ročníky · {SITE_NAME}</title>
 </svelte:head>
 
 <section class="glassCard flex flex-col gap-6 p-6">
-	<h1 class="text-3xl font-bold text-foreground">Ročníky</h1>
+	<h1 class="text-3xl font-bold text-foreground">Všetky ročníky</h1>
 	{#if data.editions.length === 0}
 		<p class="text-muted-foreground">Zatiaľ nie sú zverejnené žiadne ročníky.</p>
 	{:else}

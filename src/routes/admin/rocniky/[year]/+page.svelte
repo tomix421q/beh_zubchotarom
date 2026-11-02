@@ -79,6 +79,16 @@
 				/>
 			</Field>
 
+			<Field label="Odkaz na výsledky">
+				<input
+					name="resultsUrl"
+					type="url"
+					value={data.edition.resultsUrl ?? ''}
+					placeholder="https://..."
+					class="inputNormalize"
+				/>
+			</Field>
+
 			{#if form?.message}
 				<p class="text-sm text-destructive" role="alert">{form.message}</p>
 			{/if}
