@@ -34,6 +34,7 @@ Pridať admin modul, cez ktorý klub sám upravuje obsah webu bez zásahu do kó
 - **`Sponsor`** (úprava): nové pole `row String @default("top")` (`"top"` | `"bottom"`). Migrácia nastaví existujúcim sponzorom `row` podľa parity (párne `top`, nepárne `bottom`), aby sa vzhľad nezmenil. `splitIntoRows` sa nahradí filtrom podľa `row`. Sponzori ostávajú globálni.
 - **`Photo`**: bez zmeny schémy. Fotky sú **globálne** (jeden slider na domovskej stránke), nie viazané na ročník. `Photo.url` bude po nahraní `/uploads/<meno>`.
 - **`Edition.galleryUrl`** (existujúce pole): odkaz na fotogalériu ročníka na Google Disku. Fotky ročníkov sa v aplikácii nenahrávajú. Admin ho zadáva ako obyčajný odkaz; server prijme len `https://` URL.
+- **`Edition.resultsUrl`** (existujúce pole): výsledky ročníka sú buď https odkaz, alebo nahraté PDF (uloží sa ako `/uploads/<meno>.pdf`). Nové výsledky nahradia pôvodné a starý súbor sa zmaže. Admin ich spravuje v samostatnej sekcii „Výsledky“ (`?/saveResultsUrl`, `?/uploadResultsPdf`, `?/deleteResults`).
 - **`EditionStat`**: bez zmeny schémy.
 
 ### Ročníky
@@ -54,9 +55,9 @@ Pridať admin modul, cez ktorý klub sám upravuje obsah webu bez zásahu do kó
 ### Nahrávanie súborov
 
 - Súbory idú do adresára z `UPLOADS_DIR` (lokálne `./uploads`, v `.gitignore`; na Coolify `/data/uploads` na trvalom úložisku, pozri „Coolify a trvalé dáta“).
-- `src/routes/uploads/[name]/+server.ts` ich servíruje. Meno musí zodpovedať `^[0-9a-f-]{36}\.(jpg|png|webp|avif)$` (ochrana pred path traversal), odpoveď má `Cache-Control: public, max-age=31536000, immutable` a `X-Content-Type-Options: nosniff`.
+- `src/routes/uploads/[name]/+server.ts` ich servíruje. Meno musí zodpovedať `^[0-9a-f-]{36}\.(jpg|png|webp|avif|pdf)$` (ochrana pred path traversal), odpoveď má `Cache-Control: public, max-age=31536000, immutable` a `X-Content-Type-Options: nosniff`.
 - `$lib/server/uploads.ts`: `saveImage(file)` overí veľkosť (max 5 MB), MIME a magic bytes, vygeneruje meno cez `crypto.randomUUID()` a vráti URL. `deleteUpload(url)` maže súbor len ak URL začína `/uploads/`.
-- SVG sa nenahráva (riziko XSS). Povolené sú JPEG, PNG, WebP, AVIF.
+- SVG sa nenahráva (riziko XSS). Povolené sú JPEG, PNG, WebP, AVIF a (len pre výsledky ročníka) PDF, rovnako do 5 MB a s kontrolou magic bytes (`%PDF-`).
 - `adapter-node` má predvolený limit tela požiadavky 512 kB, preto sa v produkcii nastaví `BODY_SIZE_LIMIT` (napr. `6M`) a zdokumentuje sa v README.
 
 ### Coolify a trvalé dáta
@@ -114,7 +115,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 
 - Žiadne používateľské účty, roly ani registrácia adminov. Je jedno spoločné heslo.
 - Neriešiť registračný formulár, tlačidlo na externý formulár ani ukladanie prihlášok bežcov. `/registracia` je zatiaľ len informačná stránka.
-- Neriešiť správu trás, `propositionsHtml` ani samotné výsledky (len odkaz `resultsUrl`).
+- Neriešiť správu trás, `propositionsHtml` ani samotné výsledky (len odkaz alebo nahraté PDF v `resultsUrl`).
 - Neriešiť fotky ani sponzorov per ročník. Slider je globálny a len na domovskej stránke; sponzori sú globálni a v pätičke na všetkých stránkach. Fotky ročníkov ostávajú na Google Disku, aplikácia ich nenahráva.
 - Neriešiť CI/CD ani konfiguráciu samotného Coolify; modul pripraví `Dockerfile` a opíše, čo treba v Coolify nastaviť.
 - Neriešiť orezávanie ani zmenu veľkosti obrázkov (prípadne neskôr cez `sharp`).

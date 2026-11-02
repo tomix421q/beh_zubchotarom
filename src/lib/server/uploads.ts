@@ -58,13 +58,13 @@ function uploadPath(name: string): string {
 // Checks size, declared type and magic bytes, then stores the file under a random name
 async function saveFile(
 	file: FormDataEntryValue | null,
-	type: UploadType | UploadType[],
+	types: UploadType[],
 	messages: { missing: string; tooBig: string; type: string; invalid: string }
 ): Promise<{ url: string } | { message: string }> {
 	if (!(file instanceof File) || file.size === 0) return { message: messages.missing };
 	if (file.size > MAX_BYTES) return { message: messages.tooBig };
 
-	const declaredType = [type].flat().find((uploadType) => uploadType.mime === file.type);
+	const declaredType = types.find((uploadType) => uploadType.mime === file.type);
 	if (!declaredType) return { message: messages.type };
 
 	const bytes = Buffer.from(await file.arrayBuffer());
@@ -89,7 +89,7 @@ export function saveImage(file: FormDataEntryValue | null) {
 }
 
 export function savePdf(file: FormDataEntryValue | null) {
-	return saveFile(file, PDF_TYPE, {
+	return saveFile(file, [PDF_TYPE], {
 		missing: 'Vyberte súbor PDF.',
 		tooBig: 'Súbor PDF môže mať najviac 5 MB.',
 		type: 'Podporovaný je len formát PDF.',
