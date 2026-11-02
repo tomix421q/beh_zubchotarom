@@ -1,9 +1,11 @@
+import 'dotenv/config';
 import { PrismaLibSql } from '@prisma/adapter-libsql';
 import { PrismaClient } from '../generated/prisma/client';
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
 
-// process.env instead of $app/env, because the seed script runs outside SvelteKit
+// process.env instead of $app/env, because the seed script runs outside SvelteKit.
+// dotenv loads .env the same way the Prisma CLI does, so both use one database
 const databaseUrl = process.env.DATABASE_URL || 'file:./dev.db';
 
 export const prisma =
