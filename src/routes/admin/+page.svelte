@@ -144,11 +144,11 @@
 					type="file"
 					accept="image/jpeg,image/png,image/webp,image/avif"
 					required
-					class="text-sm"
+					class="text-sm text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-secondary-foreground file:px-2 file:py-0.5 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-secondary-foreground/80"
 				/>
 			</Field>
 
-			<Button type="submit">Uložiť logo</Button>
+			<Button type="submit" size="sm">Uložiť logo</Button>
 		</form>
 	</section>
 </div>
