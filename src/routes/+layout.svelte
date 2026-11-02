@@ -5,6 +5,7 @@
 	import Footer from '#lib/components/organism/Footer.svelte';
 	import Navbar from '#lib/components/organism/Navbar.svelte';
 	import { afterNavigate } from '$app/navigation';
+	import { page } from '$app/state';
 	import type { LayoutProps } from './$types';
 
 	let { children, data }: LayoutProps = $props();
@@ -30,6 +31,8 @@
 			{@render children()}
 		</main>
 
-		<Footer sponsors={data.sponsors} />
+		{#if !page.url.pathname.startsWith('/admin')}
+			<Footer sponsors={data.sponsors} />
+		{/if}
 	</div>
 </div>
