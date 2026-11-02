@@ -60,7 +60,15 @@
 	{#if cta || actions}
 		<div class="mt-8 flex flex-wrap justify-center gap-3">
 			{#if cta}
-				<Button href={cta.href} size="lg" class="h-11 px-6 text-base">{cta.label}</Button>
+				<Button
+					href={cta.href}
+					target={cta.newTab ? '_blank' : undefined}
+					rel={cta.newTab ? 'noopener noreferrer' : undefined}
+					size="lg"
+					class="h-11 px-6 text-base"
+				>
+					{cta.label}
+				</Button>
 			{/if}
 			{@render actions?.()}
 		</div>

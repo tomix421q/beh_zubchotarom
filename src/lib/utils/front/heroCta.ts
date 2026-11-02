@@ -7,13 +7,16 @@ type HeroCtaEdition = {
 	resultsUrl: string | null;
 };
 
-type HeroCta = { label: string; href: string };
+// newTab is for results: a PDF or an external page should not replace the site in the same tab
+type HeroCta = { label: string; href: string; newTab?: boolean };
 
 // Registration belongs to the current edition only; older editions never show it
 // Registration stays open through the event day; results link from the next day on
 export function getHeroCta(edition: HeroCtaEdition, now: Date): HeroCta | null {
 	if (getDayKey(now) > getDayKey(edition.eventDate)) {
-		return edition.resultsUrl ? { label: 'Výsledky', href: edition.resultsUrl } : null;
+		return edition.resultsUrl
+			? { label: 'Výsledky', href: edition.resultsUrl, newTab: true }
+			: null;
 	}
 
 	return edition.isCurrent && edition.registrationOpen
