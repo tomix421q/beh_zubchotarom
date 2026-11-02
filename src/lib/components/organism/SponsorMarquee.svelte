@@ -11,16 +11,26 @@
 	let { rows }: { rows: Sponsor[][] } = $props();
 
 	const directions = ['animate-marquee-left', 'animate-marquee-right'] as const;
+
+	// Widths of each row's viewport and of its sponsors, measured in the browser to decide whether the row scrolls
+	let viewportWidths: number[] = $state([0, 0]);
+	let trackWidths: number[] = $state([0, 0]);
 </script>
 
 {#snippet sponsorBadge(sponsor: Sponsor)}
-	<!-- The logo stands alone; the name is shown only when there is no logo. The main sponsor gets a small label under it -->
+	<!-- The logo box has a fixed height, so logos line up even when a main sponsor label sits below them -->
 	<div class="flex flex-col items-center gap-1">
-		{#if sponsor.logoUrl}
-			<img src={sponsor.logoUrl} alt={sponsor.name} class="h-20 w-auto max-w-60 object-contain" />
-		{:else}
-			<span class="text-center text-base font-semibold text-foreground">{sponsor.name}</span>
-		{/if}
+		<div class="flex h-20 items-center justify-center">
+			{#if sponsor.logoUrl}
+				<img
+					src={sponsor.logoUrl}
+					alt={sponsor.name}
+					class="max-h-20 w-auto max-w-60 object-contain"
+				/>
+			{:else}
+				<span class="text-center text-base font-semibold text-foreground">{sponsor.name}</span>
+			{/if}
+		</div>
 		{#if sponsor.isMain}
 			<span class="text-xs text-muted-foreground">Hlavný sponzor</span>
 		{/if}
@@ -45,11 +55,22 @@
 <section aria-label="Partneri a sponzori" class="flex flex-col gap-3 overflow-hidden">
 	{#each rows as row, rowIndex (rowIndex)}
 		{#if row.length > 0}
-			<div class="overflow-hidden">
-				<div class={['flex w-max motion-reduce:animate-none', directions[rowIndex]]}>
-					<ul class="flex items-center">{@render sponsorItems(row)}</ul>
-					<!-- The copy only keeps the loop seamless, so it is hidden from keyboard and screen readers -->
-					<ul class="flex items-center" aria-hidden="true" inert>{@render sponsorItems(row)}</ul>
+			<!-- A row only scrolls when its sponsors are wider than the footer; otherwise it stays still and centred, without a copy -->
+			{@const scrolls = trackWidths[rowIndex] > viewportWidths[rowIndex]}
+			<div class="overflow-hidden" bind:clientWidth={viewportWidths[rowIndex]}>
+				<div
+					class={[
+						'flex w-max',
+						scrolls ? ['motion-reduce:animate-none', directions[rowIndex]] : 'mx-auto'
+					]}
+				>
+					<ul class="flex items-start" bind:clientWidth={trackWidths[rowIndex]}>
+						{@render sponsorItems(row)}
+					</ul>
+					{#if scrolls}
+						<!-- The copy only keeps the loop seamless, so it is hidden from keyboard and screen readers -->
+						<ul class="flex items-start" aria-hidden="true" inert>{@render sponsorItems(row)}</ul>
+					{/if}
 				</div>
 			</div>
 		{/if}
