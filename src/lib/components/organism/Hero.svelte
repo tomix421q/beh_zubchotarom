@@ -3,9 +3,9 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { formatEventDate, getCountdown } from '../../utils/dateUtils';
 	import { getHeroCta } from '../../utils/front/heroCta';
-	import { LOGO_URL, SITE_NAME } from '../../constants';
+	import { SITE_NAME } from '../../constants';
 
-	let { edition }: { edition: Edition } = $props();
+	let { edition, logoUrl }: { edition: Edition; logoUrl: string } = $props();
 
 	let now = $state(Date.now());
 
@@ -29,7 +29,7 @@
 
 <section class="glassCard overflow-hidden px-6 py-12 text-center sm:py-16">
 	<img
-		src={LOGO_URL}
+		src={logoUrl}
 		alt="Logo Behu Zubrohlava"
 		width="300"
 		height="282"

@@ -120,4 +120,35 @@
 			</div>
 		</form>
 	</section>
+
+	<section class="glassCard flex flex-col gap-4 p-6">
+		<div>
+			<h2 class="text-lg font-semibold">Logo</h2>
+			<p class="text-sm text-muted-foreground">
+				Zobrazí sa v hlavičke a na domovskej stránke. JPEG, PNG, WebP alebo AVIF do 5 MB.
+			</p>
+		</div>
+
+		<img src={data.logoUrl} alt="Aktuálne logo" class="size-24 object-contain" />
+
+		<form
+			method="POST"
+			action="?/saveLogo"
+			enctype="multipart/form-data"
+			use:enhance
+			class="flex flex-wrap items-end gap-4"
+		>
+			<Field label="Nové logo">
+				<input
+					name="logo"
+					type="file"
+					accept="image/jpeg,image/png,image/webp,image/avif"
+					required
+					class="text-sm"
+				/>
+			</Field>
+
+			<Button type="submit">Uložiť logo</Button>
+		</form>
+	</section>
 </div>

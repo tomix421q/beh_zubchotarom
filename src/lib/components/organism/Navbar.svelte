@@ -3,7 +3,9 @@
 	import { page } from '$app/state';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { cn } from '#lib/utils/ui.js';
-	import { LOGO_URL, SITE_NAME } from '../../constants';
+	import { SITE_NAME } from '../../constants';
+
+	let { logoUrl }: { logoUrl: string } = $props();
 
 	const sectionLinks = [
 		{ href: resolve('/'), label: 'Domov' },
@@ -44,7 +46,7 @@
 <header class="border-b border-border bg-card backdrop-blur-md">
 	<nav class="pageContainer flex items-center justify-between py-4">
 		<a href={resolve('/')} class="flex items-center gap-2 text-lg font-bold text-foreground">
-			<img src={LOGO_URL} alt="" class="size-8" />
+			<img src={logoUrl} alt="" class="size-8" />
 			{SITE_NAME}
 		</a>
 

@@ -17,7 +17,7 @@
 </svelte:head>
 
 <div class="flex flex-col gap-10">
-	<Hero edition={data.edition} />
+	<Hero edition={data.edition} logoUrl={data.logoUrl} />
 
 	{#if data.photos.length > 0}
 		<PhotoSlider photos={data.photos} />

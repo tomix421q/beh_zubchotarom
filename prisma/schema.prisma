@@ -52,6 +52,12 @@ model EditionStat {
   @@index([editionId])
 }
 
+// Site-wide settings; there is only ever one row, with id = 1
+model SiteSetting {
+  id      Int     @id @default(1)
+  logoUrl String?
+}
+
 // Sponsors are one global list shared by all editions
 model Sponsor {
   id      Int     @id @default(autoincrement())

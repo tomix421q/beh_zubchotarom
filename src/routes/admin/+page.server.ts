@@ -15,6 +15,7 @@ import {
 } from '../../lib/server/editions';
 import { prisma } from '../../lib/server/db';
 import { isLoginBlocked, recordFailedLogin } from '../../lib/server/loginLimiter';
+import { deleteUpload, saveImage } from '../../lib/server/uploads';
 import type { Actions, PageServerLoad } from './$types';
 
 // A 404 instead of a redirect, so the existence of the admin area is not revealed
@@ -83,5 +84,23 @@ export const actions: Actions = {
 
 		await prisma.edition.delete({ where: { id: edition.id } });
 		await syncCurrentEdition();
+	},
+
+	// The old logo file is deleted only after the new one is stored, so a failed save keeps the current logo
+	saveLogo: async ({ request, locals }) => {
+		requireAdmin(locals);
+
+		const result = await saveImage((await request.formData()).get('logo'));
+		if ('message' in result) return fail(400, { message: result.message });
+
+		const previous = await prisma.siteSetting.findUnique({ where: { id: 1 } });
+		await prisma.siteSetting.upsert({
+			where: { id: 1 },
+			create: { id: 1, logoUrl: result.url },
+			update: { logoUrl: result.url }
+		});
+
+		// Only uploaded logos are deleted; the bundled default logo is a static file and is never touched
+		await deleteUpload(previous?.logoUrl);
 	}
 };

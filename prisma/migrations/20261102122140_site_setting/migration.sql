@@ -1,0 +1,5 @@
+-- CreateTable
+CREATE TABLE "SiteSetting" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT DEFAULT 1,
+    "logoUrl" TEXT
+);
