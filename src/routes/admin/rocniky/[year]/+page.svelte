@@ -69,6 +69,16 @@
 				/>
 			</Field>
 
+			<Field label="Odkaz na fotogalériu (Google Disk)">
+				<input
+					name="galleryUrl"
+					type="url"
+					value={data.edition.galleryUrl ?? ''}
+					placeholder="https://drive.google.com/..."
+					class="inputNormalize"
+				/>
+			</Field>
+
 			{#if form?.message}
 				<p class="text-sm text-destructive" role="alert">{form.message}</p>
 			{/if}

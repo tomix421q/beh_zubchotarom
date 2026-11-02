@@ -59,12 +59,4 @@
 			<Button href={cta.href} size="lg" class="h-11 px-6 text-base">{cta.label}</Button>
 		</div>
 	{/if}
-
-	{#if edition.infoHtml}
-		<!-- infoHtml is sanitized on the server before it reaches the page -->
-		<div class="mx-auto prose mt-8 max-w-2xl text-left text-foreground prose-invert">
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html edition.infoHtml}
-		</div>
-	{/if}
 </section>

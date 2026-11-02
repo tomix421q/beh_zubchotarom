@@ -23,7 +23,11 @@
 		<PhotoSlider photos={data.photos} />
 	{/if}
 
-	<EditionInfo year={data.edition.year} stats={data.edition.stats} />
+	<EditionInfo
+		year={data.edition.year}
+		stats={data.edition.stats}
+		infoHtml={data.edition.infoHtml}
+	/>
 
 	{#if data.sponsors.length > 0}
 		<SponsorMarquee rows={sponsorRows} />

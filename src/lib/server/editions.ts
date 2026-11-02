@@ -8,7 +8,17 @@ export type EditionFields = {
 	editionNumber: number;
 	eventDate: Date;
 	heroTitle: string | null;
+	galleryUrl: string | null;
 };
+
+// The gallery lives on Google Drive, so only an absolute https link is accepted
+function isHttpsUrl(value: string): boolean {
+	try {
+		return value.startsWith('https://') && new URL(value).protocol === 'https:';
+	} catch {
+		return false;
+	}
+}
 
 // Looked up by year from the URL; anything that is not an existing year is a 404
 export async function findEditionByYear(yearParam: string) {
@@ -29,6 +39,8 @@ export function readEditionFields(formData: FormData): EditionFields | { message
 	const eventDate = parseBratislavaDateTime(String(formData.get('eventDate') ?? ''));
 	// An empty title means the default "Beh Zubrohlava + year" is shown in the Hero
 	const heroTitle = String(formData.get('heroTitle') ?? '').trim() || null;
+	// An empty gallery means the archive page shows no gallery button
+	const galleryUrl = String(formData.get('galleryUrl') ?? '').trim() || null;
 
 	if (!Number.isInteger(year) || year < FIRST_EDITION_YEAR) {
 		return { message: `Rok musí byť celé číslo od ${FIRST_EDITION_YEAR}.` };
@@ -42,7 +54,11 @@ export function readEditionFields(formData: FormData): EditionFields | { message
 		return { message: 'Zadajte platný dátum a čas.' };
 	}
 
-	return { year, editionNumber, eventDate, heroTitle };
+	if (galleryUrl && !isHttpsUrl(galleryUrl)) {
+		return { message: 'Odkaz na galériu musí byť adresa začínajúca na https://.' };
+	}
+
+	return { year, editionNumber, eventDate, heroTitle, galleryUrl };
 }
 
 // Years are unique; exceptId lets an edition keep its own year when it is saved

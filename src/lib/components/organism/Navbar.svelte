@@ -7,11 +7,13 @@
 
 	let { logoUrl }: { logoUrl: string } = $props();
 
+	// activePrefix lets a link stay active on pages that live under another path, like /rocnik/2025 for Ročníky
 	const sectionLinks = [
 		{ href: resolve('/'), label: 'Domov' },
 		{ href: resolve('/propozicie'), label: 'Propozície' },
 		{ href: resolve('/trasy'), label: 'Trasy' },
 		{ href: resolve('/vysledky'), label: 'Výsledky' },
+		{ href: resolve('/rocniky'), label: 'Ročníky', activePrefix: '/rocnik' },
 		{ href: resolve('/kontakt'), label: 'Kontakt' }
 	];
 
@@ -19,16 +21,18 @@
 
 	// resolve() can give relative links (home is "./"), so they are made absolute before comparing.
 	// Home only matches exactly; the other sections also match their sub-pages
-	function isActive(href: string) {
-		const path = new URL(href, page.url.href).pathname;
+	function isActive(link: { href: string; activePrefix?: string }) {
+		const path = new URL(link.href, page.url.href).pathname;
 
-		return path === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(path);
+		if (path === '/') return page.url.pathname === '/';
+
+		return page.url.pathname.startsWith(link.activePrefix ?? path);
 	}
 </script>
 
 {#snippet sectionLinkItems(linkClass: string)}
 	{#each sectionLinks as link (link.href)}
-		{@const active = isActive(link.href)}
+		{@const active = isActive(link)}
 		<li>
 			<a
 				href={link.href}
