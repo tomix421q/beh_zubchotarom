@@ -79,16 +79,6 @@
 				/>
 			</Field>
 
-			<Field label="Odkaz na výsledky">
-				<input
-					name="resultsUrl"
-					type="url"
-					value={data.edition.resultsUrl ?? ''}
-					placeholder="https://..."
-					class="inputNormalize"
-				/>
-			</Field>
-
 			{#if form?.message}
 				<p class="text-sm text-destructive" role="alert">{form.message}</p>
 			{/if}
@@ -96,6 +86,90 @@
 			<div class="flex justify-end">
 				<Button type="submit">Uložiť</Button>
 			</div>
+		</form>
+	</section>
+
+	<section class="glassCard flex flex-col gap-4 p-6">
+		<div>
+			<h2 class="text-lg font-semibold">Výsledky</h2>
+			<p class="text-sm text-muted-foreground">
+				Tlačidlo „Výsledky“ sa zobrazí po dni pretekov. Nahrajte PDF (do 5 MB) alebo zadajte odkaz;
+				nové výsledky nahradia pôvodné.
+			</p>
+		</div>
+
+		{#if form?.resultsMessage}
+			<p class="text-sm text-destructive" role="alert">{form.resultsMessage}</p>
+		{/if}
+
+		{#if data.edition.resultsUrl}
+			<form method="POST" action="?/deleteResults" use:enhance class="flex items-center gap-4">
+				<!-- An uploaded PDF is a path on this site; a link goes to another site -->
+				<!-- eslint-disable svelte/no-navigation-without-resolve -->
+				<a
+					href={data.edition.resultsUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-sm underline underline-offset-4 hover:text-foreground"
+				>
+					{data.edition.resultsUrl.startsWith('/uploads/')
+						? 'Nahraté PDF'
+						: data.edition.resultsUrl}
+				</a>
+				<!-- eslint-enable svelte/no-navigation-without-resolve -->
+
+				<Button
+					type="submit"
+					variant="destructive"
+					size="sm"
+					onclick={(event) => {
+						if (!confirm('Naozaj odstrániť výsledky?')) event.preventDefault();
+					}}
+				>
+					Odstrániť
+				</Button>
+			</form>
+		{:else}
+			<p class="text-muted-foreground">Výsledky zatiaľ nie sú zverejnené.</p>
+		{/if}
+
+		<form
+			method="POST"
+			action="?/uploadResultsPdf"
+			enctype="multipart/form-data"
+			use:enhance
+			class="flex flex-wrap items-end gap-4"
+		>
+			<Field label="Nahrať PDF">
+				<input
+					name="resultsPdf"
+					type="file"
+					accept="application/pdf"
+					required
+					class="fileInputNormalize"
+				/>
+			</Field>
+
+			<Button type="submit" size="sm">Nahrať PDF</Button>
+		</form>
+
+		<form
+			method="POST"
+			action="?/saveResultsUrl"
+			use:enhance
+			class="flex flex-wrap items-end gap-4"
+		>
+			<Field label="Alebo odkaz na výsledky">
+				<input
+					name="resultsUrl"
+					type="url"
+					required
+					placeholder="https://..."
+					class="inputNormalize"
+				/>
+			</Field>
+
+			<Button type="submit" size="sm">Uložiť odkaz</Button>
 		</form>
 	</section>
 

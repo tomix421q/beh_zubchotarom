@@ -3,11 +3,13 @@ import { requireAdmin } from '../../../../lib/server/auth';
 import { prisma } from '../../../../lib/server/db';
 import {
 	findEditionByYear,
+	isHttpsUrl,
 	isYearTaken,
 	readEditionFields,
 	syncCurrentEdition
 } from '../../../../lib/server/editions';
 import { readInfoHtml } from '../../../../lib/server/sanitizeInfoHtml';
+import { deleteUpload, savePdf } from '../../../../lib/server/uploads';
 import { formatBratislavaDateTime } from '../../../../lib/utils/dateUtils';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -64,6 +66,42 @@ export const actions: Actions = {
 		await syncCurrentEdition();
 
 		redirect(303, `/admin/rocniky/${fields.year}`);
+	},
+
+	// The results are either a link or an uploaded PDF; saving one replaces the other, and an old file is removed at once
+	saveResultsUrl: async ({ request, locals, params }) => {
+		requireAdmin(locals);
+
+		const edition = await findEditionByYear(params.year);
+		const resultsUrl = String((await request.formData()).get('resultsUrl') ?? '').trim();
+		if (!isHttpsUrl(resultsUrl)) {
+			return fail(400, {
+				resultsMessage: 'Odkaz na výsledky musí byť adresa začínajúca na https://.'
+			});
+		}
+
+		await prisma.edition.update({ where: { id: edition.id }, data: { resultsUrl } });
+		await deleteUpload(edition.resultsUrl);
+	},
+
+	uploadResultsPdf: async ({ request, locals, params }) => {
+		requireAdmin(locals);
+
+		const edition = await findEditionByYear(params.year);
+		const result = await savePdf((await request.formData()).get('resultsPdf'));
+		if ('message' in result) return fail(400, { resultsMessage: result.message });
+
+		await prisma.edition.update({ where: { id: edition.id }, data: { resultsUrl: result.url } });
+		await deleteUpload(edition.resultsUrl);
+	},
+
+	deleteResults: async ({ locals, params }) => {
+		requireAdmin(locals);
+
+		const edition = await findEditionByYear(params.year);
+
+		await prisma.edition.update({ where: { id: edition.id }, data: { resultsUrl: null } });
+		await deleteUpload(edition.resultsUrl);
 	},
 
 	// An unchecked checkbox is not sent at all, so its absence means the registration is closed
