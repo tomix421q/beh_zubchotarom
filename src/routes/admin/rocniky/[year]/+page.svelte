@@ -107,6 +107,126 @@
 	</section>
 
 	<section class="glassCard flex flex-col gap-4 p-6">
+		<div>
+			<h2 class="text-lg font-semibold">Štatistiky</h2>
+			<p class="text-sm text-muted-foreground">
+				Zobrazia sa na domovskej stránke v poradí zľava doprava. Prázdny zoznam skryje sekciu.
+			</p>
+		</div>
+
+		{#if form?.statMessage}
+			<p class="text-sm text-destructive" role="alert">{form.statMessage}</p>
+		{/if}
+
+		{#if data.stats.length === 0}
+			<p class="text-muted-foreground">Zatiaľ nie sú žiadne štatistiky.</p>
+		{:else}
+			<ul class="flex flex-col gap-4">
+				{#each data.stats as stat, index (stat.id)}
+					<li>
+						<form
+							method="POST"
+							action="?/saveStat"
+							use:enhance
+							class="grid gap-3 sm:grid-cols-[1fr_1fr_auto]"
+						>
+							<input type="hidden" name="id" value={stat.id} />
+
+							<Field label="Kľúč">
+								<input
+									name="label"
+									type="text"
+									required
+									value={stat.label}
+									class="inputNormalize"
+								/>
+							</Field>
+
+							<Field label="Hodnota">
+								<input
+									name="value"
+									type="text"
+									required
+									value={stat.value}
+									class="inputNormalize"
+								/>
+							</Field>
+
+							<div class="flex flex-wrap items-end gap-2">
+								<Button type="submit">Uložiť</Button>
+
+								<Button
+									type="submit"
+									formaction="?/moveStat"
+									name="direction"
+									value="up"
+									variant="ghost"
+									size="icon"
+									disabled={index === 0}
+									aria-label="Posunúť vyššie"
+								>
+									↑
+								</Button>
+
+								<Button
+									type="submit"
+									formaction="?/moveStat"
+									name="direction"
+									value="down"
+									variant="ghost"
+									size="icon"
+									disabled={index === data.stats.length - 1}
+									aria-label="Posunúť nižšie"
+								>
+									↓
+								</Button>
+
+								<Button
+									type="submit"
+									formaction="?/deleteStat"
+									variant="destructive"
+									onclick={(event) => {
+										if (!confirm(`Naozaj zmazať štatistiku „${stat.label}“?`)) {
+											event.preventDefault();
+										}
+									}}
+								>
+									Zmazať
+								</Button>
+							</div>
+						</form>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+
+		<form
+			method="POST"
+			action="?/addStat"
+			use:enhance
+			class="grid gap-3 border-t border-border pt-4 sm:grid-cols-[1fr_1fr_auto]"
+		>
+			<Field label="Kľúč">
+				<input
+					name="label"
+					type="text"
+					required
+					placeholder="Štartujúcich bežcov"
+					class="inputNormalize"
+				/>
+			</Field>
+
+			<Field label="Hodnota">
+				<input name="value" type="text" required placeholder="312" class="inputNormalize" />
+			</Field>
+
+			<div class="flex items-end">
+				<Button type="submit">Pridať</Button>
+			</div>
+		</form>
+	</section>
+
+	<section class="glassCard flex flex-col gap-4 p-6">
 		<h2 class="text-lg font-semibold">Informácie o ročníku</h2>
 
 		<form method="POST" action="?/saveInfo" use:enhance class="flex flex-col gap-4">
