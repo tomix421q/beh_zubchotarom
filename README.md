@@ -52,3 +52,17 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
+
+## Environment variables
+
+Copy `.env.example` to `.env` for local development. In production (Coolify) set the same variables in the app's environment.
+
+| Variable               | Purpose                                                                         | Default         |
+| ---------------------- | ------------------------------------------------------------------------------- | --------------- |
+| `ADMIN_PASSWORD`       | Password for `/admin`; without it every login is refused                        | none            |
+| `ADMIN_SESSION_SECRET` | Signs the admin session cookie, e.g. `openssl rand -hex 32`                     | none            |
+| `DATABASE_URL`         | SQLite database file                                                            | `file:./dev.db` |
+| `UPLOADS_DIR`          | Folder for uploaded images                                                      | `./uploads`     |
+| `BODY_SIZE_LIMIT`      | Largest request body the production server accepts; set `6M` so 5 MB photos fit | `512K`          |
+
+In production, point `DATABASE_URL` and `UPLOADS_DIR` at a persistent volume (on Coolify `file:/data/app.db` and `/data/uploads`). Otherwise the database and uploads are lost on every redeploy. `DATABASE_URL` must also be set where `prisma migrate` runs.

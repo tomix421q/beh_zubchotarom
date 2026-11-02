@@ -9,5 +9,9 @@ export const variables = defineEnvVars({
 	ADMIN_SESSION_SECRET: {
 		schema: (value) => value,
 		description: 'Secret for signing the admin session cookie'
+	},
+	UPLOADS_DIR: {
+		schema: (value) => value || './uploads',
+		description: 'Folder where uploaded images are stored, on the server a persistent volume'
 	}
 });

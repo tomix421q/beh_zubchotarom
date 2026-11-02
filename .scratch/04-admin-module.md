@@ -102,7 +102,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 - [x] 3. Registrácia: migrácia `registrationOpen`, `registrationHtml`, úprava `getHeroCta`, verejná stránka `/registracia`, prepínač v `/admin/rocniky/[year]`.
 - [x] 4. Tiptap: `RichTextEditor.svelte` (nadpisy, tučné, zoznamy, odkaz, štýl „upozornenie“), `/admin/rocniky/[year]/registracia`, rozšírenie sanitizéra o `span.notice`, ukladanie so sanitizáciou, rovnaký editor pre `infoHtml`.
 - [x] 5. Štatistiky ročníka: pridať, upraviť, zmazať, zmeniť poradie (`order`); prázdny zoznam skryje sekciu (existujúce správanie).
-- [ ] 6. Nahrávanie a trvalé dáta: `DATABASE_URL` namiesto natvrdo `file:./dev.db` (`db.ts`, `prisma.config.ts`), `uploads.ts`, route `/uploads/[name]`, `UPLOADS_DIR`, `BODY_SIZE_LIMIT`, `.gitignore`.
+- [x] 6. Nahrávanie a trvalé dáta: `DATABASE_URL` namiesto natvrdo `file:./dev.db` (`db.ts`, `prisma.config.ts`), `uploads.ts`, route `/uploads/[name]`, `UPLOADS_DIR`, `BODY_SIZE_LIMIT`, `.gitignore`.
 - [ ] 7. Hero: migrácia `SiteSetting` a `heroTitle`, formulár (logo, ročník, h1, dátum), Hero a Navbar čítajú logo a h1 z DB s fallbackom na konštanty.
 - [ ] 8. Fotky slidera (globálne): nahrať (s povinným `alt`), zapnúť/vypnúť `isActive`, zmeniť poradie, zmazať (aj súbor). Jedna sekcia v `/admin`.
 - [ ] 9. Verejný archív: `/rocniky`, `/rocnik/[year]` (Hero bez odpočtu, `EditionInfo`, tlačidlo „Fotogaléria“ z `galleryUrl`), odkaz „Ročníky“ v Navbare, pole `galleryUrl` v admine s validáciou `https://`, 404 pre neexistujúci rok.

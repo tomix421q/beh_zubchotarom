@@ -22,17 +22,6 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-cat << 'EOF' > .gitignore
-node_modules/
-.svelte-kit/
-build/
-dist/
-.env
-.env.*
-!.env.example
-.DS_Store
-EOF
-
-/prisma/src/lib/generated/prisma
 dev.db*
+/uploads
 src/lib/generated/

@@ -7,6 +7,6 @@ export default defineConfig({
 		seed: 'bun prisma/seed.ts'
 	},
 	datasource: {
-		url: 'file:./dev.db'
+		url: process.env.DATABASE_URL || 'file:./dev.db'
 	}
 });
