@@ -8,14 +8,12 @@
 </script>
 
 {#snippet sponsorBadge(sponsor: Sponsor)}
-	<!-- The card only wraps the logo, so it is as wide as the logo; the name is shown only when there is no logo -->
-	<div class="glassCard flex h-20 items-center justify-center px-6">
-		{#if sponsor.logoUrl}
-			<img src={sponsor.logoUrl} alt={sponsor.name} class="h-12 w-auto max-w-40 object-contain" />
-		{:else}
-			<span class="text-center text-sm font-semibold text-foreground">{sponsor.name}</span>
-		{/if}
-	</div>
+	<!-- The logo stands alone; the name is shown only when there is no logo -->
+	{#if sponsor.logoUrl}
+		<img src={sponsor.logoUrl} alt={sponsor.name} class="h-12 w-auto max-w-40 object-contain" />
+	{:else}
+		<span class="text-center text-sm font-semibold text-foreground">{sponsor.name}</span>
+	{/if}
 {/snippet}
 
 {#snippet sponsorItems(sponsors: Sponsor[])}

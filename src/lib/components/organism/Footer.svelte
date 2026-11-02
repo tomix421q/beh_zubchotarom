@@ -13,7 +13,12 @@
 
 <!-- The page container gives the same width as the cards above, so the marquee does not run the full window -->
 {#if sponsors.length > 0}
-	<footer class="pageContainer pb-8 mt-12 lg:mt-24">
-		<SponsorMarquee rows={sponsorRows} />
+	<footer class="pageContainer mt-12 pb-8 lg:mt-24">
+		<section class="glassCard flex flex-col gap-6 p-6">
+			<h2 class="text-center text-lg font-semibold tracking-wider text-foreground">
+				Sponzori a podporili nás
+			</h2>
+			<SponsorMarquee rows={sponsorRows} />
+		</section>
 	</footer>
 {/if}
