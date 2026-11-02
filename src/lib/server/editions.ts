@@ -12,8 +12,8 @@ export type EditionFields = {
 	resultsUrl: string | null;
 };
 
-// The gallery and the results are external pages, so only an absolute https link is accepted
-function isHttpsUrl(value: string): boolean {
+// The gallery, the results and the sponsor websites are external pages, so only an absolute https link is accepted
+export function isHttpsUrl(value: string): boolean {
 	try {
 		return value.startsWith('https://') && new URL(value).protocol === 'https:';
 	} catch {

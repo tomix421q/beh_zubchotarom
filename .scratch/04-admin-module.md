@@ -47,7 +47,7 @@ Pridať admin modul, cez ktorý klub sám upravuje obsah webu bez zásahu do kó
 
 - `/rocniky`: zoznam všetkých ročníkov od najnovšieho (rok, poradové číslo, dátum, odkaz). Navbar dostane odkaz „Ročníky“.
 - `/rocnik/[year]`: stránka ročníka zložená z existujúcich komponentov: `Hero` (ročník, h1, dátum; pri minulom ročníku bez odpočtu a s odkazom na výsledky podľa `resultsUrl`) a `EditionInfo` (štatistiky a `infoHtml`). Ak je vyplnené `galleryUrl`, zobrazí sa tlačidlo „Fotogaléria“ (otvorí Google Disk v novom okne, `rel="noopener noreferrer"`). Slider tu nie je. Neexistujúci rok vráti 404.
-- Sponzori a slider sú globálne a patria len na domovskú stránku.
+- Slider patrí len na domovskú stránku. Sponzori sú globálne a zobrazujú sa v hlavičke na všetkých stránkach.
 - Domovská stránka ostáva aktuálnym ročníkom so slidrom globálnych fotiek.
 - Stránka ročníka je verejná hneď po vytvorení v admine.
 
@@ -106,7 +106,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 - [x] 7. Hero: migrácia `SiteSetting` a `heroTitle`, formulár (logo, ročník, h1, dátum), Hero a Navbar čítajú logo a h1 z DB s fallbackom na konštanty.
 - [x] 8. Fotky slidera (globálne): nahrať (s povinným `alt`), zapnúť/vypnúť `isActive`, zmeniť poradie, zmazať (aj súbor). Jedna sekcia v `/admin`.
 - [x] 9. Verejný archív: `/rocniky`, `/rocnik/[year]` (Hero bez odpočtu, `EditionInfo`, tlačidlo „Fotogaléria“ z `galleryUrl`), odkaz „Ročníky“ v Navbare, pole `galleryUrl` v admine s validáciou `https://`, 404 pre neexistujúci rok.
-- [ ] 10. Sponzori: pridať s logom alebo len názvom, `webUrl`, výber radu (`top` / `bottom`), zmazať, zmeniť poradie. Migrácia `row`, `SponsorMarquee` číta rad z `row`.
+- [x] 10. Sponzori: pridať s logom alebo len názvom, `webUrl`, výber radu (`top` / `bottom`), zmazať, zmeniť poradie. Migrácia `row`, `SponsorMarquee` číta rad z `row`.
 - [ ] 11. Coolify: `Dockerfile` (multi-stage, nie-root, migrácie pri štarte), `.dockerignore`, popis premenných a trvalého úložiska v README. Overiť lokálne cez `docker build` a `docker run -v`: nahrať fotku, vytvoriť ročník, kontajner zahodiť a znova spustiť; dáta ostanú.
 - [ ] 12. `bun run check`, `bun run lint`, Prettier a prechod celým adminom na dev serveri (prihlásenie, každá sekcia, zlé heslo, neprihlásený na `/admin`, čistá databáza bez ročníka, archív: starý ročník s odkazom na galériu aj bez neho).
 
@@ -115,7 +115,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 - Žiadne používateľské účty, roly ani registrácia adminov. Je jedno spoločné heslo.
 - Neriešiť registračný formulár, tlačidlo na externý formulár ani ukladanie prihlášok bežcov. `/registracia` je zatiaľ len informačná stránka.
 - Neriešiť správu trás, `propositionsHtml` ani samotné výsledky (len odkaz `resultsUrl`).
-- Neriešiť fotky ani sponzorov per ročník. Slider aj sponzori sú globálni a len na domovskej stránke. Fotky ročníkov ostávajú na Google Disku, aplikácia ich nenahráva.
+- Neriešiť fotky ani sponzorov per ročník. Slider je globálny a len na domovskej stránke; sponzori sú globálni a v hlavičke na všetkých stránkach. Fotky ročníkov ostávajú na Google Disku, aplikácia ich nenahráva.
 - Neriešiť CI/CD ani konfiguráciu samotného Coolify; modul pripraví `Dockerfile` a opíše, čo treba v Coolify nastaviť.
 - Neriešiť orezávanie ani zmenu veľkosti obrázkov (prípadne neskôr cez `sharp`).
 - Neposielať heslo ani token v URL alebo `localStorage`. Len `httpOnly` cookie.

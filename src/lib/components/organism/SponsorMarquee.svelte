@@ -2,7 +2,7 @@
 	type Sponsor = { id: number; name: string; logoUrl: string | null; webUrl: string | null };
 
 	// The first row moves left and the second moves right; both run all the time
-	let { rows }: { rows: [Sponsor[], Sponsor[]] } = $props();
+	let { rows }: { rows: Sponsor[][] } = $props();
 
 	const directions = ['animate-marquee-left', 'animate-marquee-right'] as const;
 </script>
@@ -34,8 +34,7 @@
 	{/each}
 {/snippet}
 
-<section aria-label="Partneri a sponzori" class="glassCard flex flex-col gap-4 p-6">
-	<h2 class="mb-5 text-center text-lg font-semibold text-foreground tracking-wider">Sponzori</h2>
+<section aria-label="Partneri a sponzori" class="flex flex-col gap-3 overflow-hidden">
 	{#each rows as row, rowIndex (rowIndex)}
 		{#if row.length > 0}
 			<div class="overflow-hidden">

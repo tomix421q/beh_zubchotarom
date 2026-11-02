@@ -9,13 +9,10 @@ export const load: PageServerLoad = async ({ parent }) => {
 	if (!edition) error(404, 'Aktuálny ročník sa nenašiel.');
 
 	// Photos keep the order set in the admin, so the slider shows them left to right
-	const [photos, sponsors] = await Promise.all([
-		prisma.photo.findMany({
-			where: { isActive: true },
-			orderBy: [{ order: 'asc' }, { id: 'asc' }]
-		}),
-		prisma.sponsor.findMany({ orderBy: { order: 'asc' } })
-	]);
+	const photos = await prisma.photo.findMany({
+		where: { isActive: true },
+		orderBy: [{ order: 'asc' }, { id: 'asc' }]
+	});
 
-	return { edition, photos, sponsors };
+	return { edition, photos };
 };

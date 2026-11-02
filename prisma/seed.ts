@@ -38,8 +38,8 @@ const stats2027 = [
 
 // Sponsors are a global list; they are only seeded when the table is empty so admin edits survive
 const sampleSponsors = [
-	{ name: 'Ukážkový sponzor A', webUrl: 'https://example.com', order: 0 },
-	{ name: 'Ukážkový sponzor B', order: 1 }
+	{ name: 'Ukážkový sponzor A', webUrl: 'https://example.com', order: 0, row: 'top' },
+	{ name: 'Ukážkový sponzor B', order: 1, row: 'bottom' }
 ];
 
 // Mockup photos until real ones are added; they are only seeded when the table is empty so admin edits survive

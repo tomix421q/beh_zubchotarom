@@ -65,6 +65,8 @@ model Sponsor {
   logoUrl String?
   webUrl  String?
   order   Int     @default(0)
+  // "top" or "bottom", the row of the sponsor marquee the sponsor is shown in
+  row     String  @default("top")
 }
 
 model Photo {

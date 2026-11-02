@@ -23,7 +23,7 @@
 <div class="min-h-dvh bg-[url(/bg.jpg)] bg-cover bg-center">
 	<div class="dark flex min-h-dvh flex-col bg-background/60 text-foreground">
 		<AdminCorner isAdmin={data.isAdmin} />
-		<Navbar logoUrl={data.logoUrl} />
+		<Navbar logoUrl={data.logoUrl} sponsors={data.sponsors} />
 
 		<main class="pageContainer flex-1 py-6 sm:py-10">
 			{@render children()}
