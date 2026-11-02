@@ -13,7 +13,7 @@
 
 <!-- The page container gives the same width as the cards above, so the marquee does not run the full window -->
 {#if sponsors.length > 0}
-	<footer class="pageContainer pb-8 lg:mt-24">
+	<footer class="pageContainer pb-8 mt-12 lg:mt-24">
 		<SponsorMarquee rows={sponsorRows} />
 	</footer>
 {/if}
