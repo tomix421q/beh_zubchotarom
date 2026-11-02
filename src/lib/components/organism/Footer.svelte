@@ -15,9 +15,7 @@
 {#if sponsors.length > 0}
 	<footer class="pageContainer mt-12 pb-8 lg:mt-24">
 		<section class="glassCard flex flex-col gap-6 p-6">
-			<h2 class="text-center text-lg font-semibold tracking-wider text-foreground">
-				Sponzori
-			</h2>
+			<h2 class="text-center text-lg font-semibold tracking-wider text-foreground">Sponzori</h2>
 			<SponsorMarquee rows={sponsorRows} />
 		</section>
 	</footer>
