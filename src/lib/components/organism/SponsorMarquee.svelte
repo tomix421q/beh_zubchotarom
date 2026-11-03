@@ -20,12 +20,12 @@
 {#snippet sponsorBadge(sponsor: Sponsor)}
 	<!-- The logo box has a fixed height, so logos line up even when a main sponsor label sits below them -->
 	<div class="flex flex-col items-center gap-1">
-		<div class="flex h-20 items-center justify-center">
+		<div class="flex h-12 items-center justify-center sm:h-20">
 			{#if sponsor.logoUrl}
 				<img
 					src={sponsor.logoUrl}
 					alt={sponsor.name}
-					class="max-h-20 w-auto max-w-60 object-contain"
+					class="max-h-12 w-auto max-w-40 object-contain sm:max-h-20 sm:max-w-60"
 				/>
 			{:else}
 				<span class="text-center text-base font-semibold text-foreground">{sponsor.name}</span>
