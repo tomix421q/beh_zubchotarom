@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import ConfirmDeleteButton from '#lib/components/atoms/ConfirmDeleteButton.svelte';
 	import Field from '#lib/components/atoms/Field.svelte';
 	import RichTextEditor from '#lib/components/molecules/RichTextEditor.svelte';
 	import { FIRST_EDITION_YEAR, SITE_NAME } from '../../../../lib/constants';
@@ -118,16 +119,7 @@
 				</a>
 				<!-- eslint-enable svelte/no-navigation-without-resolve -->
 
-				<Button
-					type="submit"
-					variant="destructive"
-					size="sm"
-					onclick={(event) => {
-						if (!confirm('Naozaj odstrániť výsledky?')) event.preventDefault();
-					}}
-				>
-					Odstrániť
-				</Button>
+				<ConfirmDeleteButton size="sm" label="Odstrániť" confirmLabel="Naozaj odstrániť?" />
 			</form>
 		{:else}
 			<p class="text-muted-foreground">Výsledky zatiaľ nie sú zverejnené.</p>
@@ -278,18 +270,7 @@
 									↓
 								</Button>
 
-								<Button
-									type="submit"
-									formaction="?/deleteStat"
-									variant="destructive"
-									onclick={(event) => {
-										if (!confirm(`Naozaj zmazať štatistiku „${stat.label}“?`)) {
-											event.preventDefault();
-										}
-									}}
-								>
-									Zmazať
-								</Button>
+								<ConfirmDeleteButton formaction="?/deleteStat" />
 							</div>
 						</form>
 					</li>

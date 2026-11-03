@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '$app/forms';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import ConfirmDeleteButton from '#lib/components/atoms/ConfirmDeleteButton.svelte';
 	import Field from '#lib/components/atoms/Field.svelte';
 	import { FIRST_EDITION_YEAR, SITE_NAME } from '../../lib/constants';
 	import { formatEventDate } from '../../lib/utils/dateUtils';
@@ -93,21 +94,9 @@
 								Upraviť
 							</Button>
 
-							<form
-								method="POST"
-								action="?/deleteEdition"
-								use:enhance={({ cancel }) => {
-									if (
-										!confirm(
-											`Naozaj zmazať ročník ${edition.year}? Zmažú sa aj jeho trasy a štatistiky.`
-										)
-									) {
-										cancel();
-									}
-								}}
-							>
+							<form method="POST" action="?/deleteEdition" use:enhance class="flex gap-2">
 								<input type="hidden" name="id" value={edition.id} />
-								<Button type="submit" variant="destructive" size="sm">Zmazať</Button>
+								<ConfirmDeleteButton size="sm" confirmLabel="Zmazať aj trasy a štatistiky?" />
 							</form>
 						</div>
 					</li>
@@ -218,17 +207,7 @@
 								↓
 							</Button>
 
-							<Button
-								type="submit"
-								formaction="?/deletePhoto"
-								variant="destructive"
-								size="sm"
-								onclick={(event) => {
-									if (!confirm('Naozaj zmazať túto fotku?')) event.preventDefault();
-								}}
-							>
-								Zmazať
-							</Button>
+							<ConfirmDeleteButton formaction="?/deletePhoto" size="sm" />
 						</form>
 					</li>
 				{/each}
@@ -349,17 +328,7 @@
 										↓
 									</Button>
 
-									<Button
-										type="submit"
-										formaction="?/deleteSponsor"
-										variant="destructive"
-										size="sm"
-										onclick={(event) => {
-											if (!confirm('Naozaj zmazať tohto sponzora?')) event.preventDefault();
-										}}
-									>
-										Zmazať
-									</Button>
+									<ConfirmDeleteButton formaction="?/deleteSponsor" size="sm" />
 								</form>
 							</li>
 						{/each}
