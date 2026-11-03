@@ -54,8 +54,12 @@ model EditionStat {
 
 // Site-wide settings; there is only ever one row, with id = 1
 model SiteSetting {
-  id      Int     @id @default(1)
-  logoUrl String?
+  id            Int     @id @default(1)
+  logoUrl       String?
+  // Text of the Kontakt page, written in the admin editor
+  contactHtml   String?
+  // Google Maps embed address shown under the contact text
+  contactMapUrl String?
 }
 
 // Sponsors are one global list shared by all editions

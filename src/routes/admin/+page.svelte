@@ -109,6 +109,17 @@
 		{/if}
 	</section>
 
+	<section class="glassCard flex flex-wrap items-center justify-between gap-4 p-6">
+		<div>
+			<h2 class="text-lg font-semibold">Kontakt</h2>
+			<p class="text-sm text-muted-foreground">
+				Text stránky Kontakt: kontaktné údaje, prípadne odkaz na mapu.
+			</p>
+		</div>
+
+		<Button href="/admin/kontakt" variant="outline" size="sm">Upraviť</Button>
+	</section>
+
 	<section class="glassCard flex flex-col gap-4 p-6">
 		<div>
 			<h2 class="text-lg font-semibold">Logo</h2>

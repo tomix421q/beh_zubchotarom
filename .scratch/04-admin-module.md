@@ -30,8 +30,8 @@ Pridať admin modul, cez ktorý klub sám upravuje obsah webu bez zásahu do kó
 ### Dátový model (Prisma)
 
 - **`Edition`** (úprava): nové polia `registrationOpen Boolean @default(false)`, `registrationHtml String?`, `heroTitle String?` (h1; ak je `null`, použije sa `SITE_NAME + year` ako dnes). Existujúce `registrationUrl` ostáva v schéme, ale `/registracia` ho zatiaľ nepoužíva. Štatistiky (`EditionStat`), `infoHtml`, `registrationOpen` a `registrationHtml` sú **per ročník**.
-- **`SiteSetting`** (nový, jeden riadok `id = 1`): `logoUrl String?`. Logo je pre celý web. Ak je `null`, použije sa `LOGO_URL` z `constants.ts`.
-- **`Sponsor`** (úprava): nové pole `row String @default("top")` (`"top"` | `"bottom"`). Migrácia nastaví existujúcim sponzorom `row` podľa parity (párne `top`, nepárne `bottom`), aby sa vzhľad nezmenil. `splitIntoRows` sa nahradí filtrom podľa `row`. Sponzori ostávajú globálni.
+- **`SiteSetting`** (nový, jeden riadok `id = 1`): `logoUrl String?`, `contactHtml String?`, `contactMapUrl String?`. Logo je pre celý web, ak je `null`, použije sa `LOGO_URL` z `constants.ts`. Kontakt je tiež jeden pre celý web: `contactHtml` je sanitizovaný text stránky `/kontakt` a `contactMapUrl` je adresa Google Maps embed (ukladá sa len adresa zo `src`, nie celý `<iframe>`).
+- **`Sponsor`** (úprava): nové pole `row String @default("top")` (`"top"` | `"bottom"`). Migrácia nastaví existujúcim sponzorom `row` podľa parity (párne `top`, nepárne `bottom`), aby sa vzhľad nezmenil. `splitIntoRows` sa nahradí filtrom podľa `row`. Sponzori ostávajú globálni. Pole `isMain Boolean @default(false)` označuje hlavného sponzora: pod jeho logom sa zobrazí nenápadný popis „Hlavný sponzor“, rad ani poradie sa nemení.
 - **`Photo`**: bez zmeny schémy. Fotky sú **globálne** (jeden slider na domovskej stránke), nie viazané na ročník. `Photo.url` bude po nahraní `/uploads/<meno>`.
 - **`Edition.galleryUrl`** (existujúce pole): odkaz na fotogalériu ročníka na Google Disku. Fotky ročníkov sa v aplikácii nenahrávajú. Admin ho zadáva ako obyčajný odkaz; server prijme len `https://` URL.
 - **`Edition.resultsUrl`** (existujúce pole): výsledky ročníka sú buď https odkaz, alebo nahraté PDF (uloží sa ako `/uploads/<meno>.pdf`). Nové výsledky nahradia pôvodné a starý súbor sa zmaže. Admin ich spravuje v samostatnej sekcii „Výsledky“ (`?/saveResultsUrl`, `?/uploadResultsPdf`, `?/deleteResults`).
@@ -74,14 +74,16 @@ Nasadenie ide cez Coolify z `Dockerfile`. Kontajner sa pri každom nasadení vyt
 
 ### Routy
 
-| Routa | Účel |
-| --- | --- |
-| `/admin` | prehľad: zoznam ročníkov (vytvoriť, zmazať) a globálne sekcie: logo, fotky slidera, sponzori |
-| `/admin/rocniky/[year]` | úprava ročníka: Hero (ročník, h1, dátum), prepínač registrácie, štatistiky, `infoHtml`, `galleryUrl` |
-| `/admin/rocniky/[year]/registracia` | editor Tiptap pre `registrationHtml` tohto ročníka |
-| `/rocniky`, `/rocnik/[year]` | verejný archív ročníkov (pozri vyššie) |
-| `/registracia` | verejná informačná stránka aktuálneho ročníka: len sanitizovaný `registrationHtml` (propozície, štartovné, prezentácia, štart). Bez formulára a bez tlačidla. Dostupná aj pri vypnutom tlačidle v Hero |
-| `/uploads/[name]` | servírovanie nahraných súborov |
+| Routa                               | Účel                                                                                                                                                                                                   |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/admin`                            | prehľad: zoznam ročníkov (vytvoriť, zmazať) a globálne sekcie: logo, fotky slidera, sponzori                                                                                                           |
+| `/admin/rocniky/[year]`             | úprava ročníka: Hero (ročník, h1, dátum), prepínač registrácie, štatistiky, `infoHtml`, `galleryUrl`                                                                                                   |
+| `/admin/rocniky/[year]/registracia` | editor Tiptap pre `registrationHtml` tohto ročníka                                                                                                                                                     |
+| `/rocniky`, `/rocnik/[year]`        | verejný archív ročníkov (pozri vyššie)                                                                                                                                                                 |
+| `/admin/kontakt`                    | editor Tiptap pre `contactHtml` a pole na Google Maps embed (`contactMapUrl`), globálne pre celý web                                                                                                   |
+| `/registracia`                      | verejná informačná stránka aktuálneho ročníka: len sanitizovaný `registrationHtml` (propozície, štartovné, prezentácia, štart). Bez formulára a bez tlačidla. Dostupná aj pri vypnutom tlačidle v Hero |
+| `/kontakt`                          | verejná stránka: sanitizovaný `contactHtml` a pod ním mapa, ak je vyplnená. Bez textu aj mapy ukáže „Kontaktné údaje budú doplnené.“                                                                   |
+| `/uploads/[name]`                   | servírovanie nahraných súborov                                                                                                                                                                         |
 
 Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPhoto`, `?/saveSponsor`, ...). Formuláre používajú `use:enhance`, validácia je na serveri (typy, rozsahy, povinný `alt`).
 
@@ -96,6 +98,16 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 - Jediný vlastný štýl je „upozornenie“ (červený text ako v pôvodnej stránke): vlastné inline označenie v Tiptape, ktoré sa uloží ako `<span class="notice">`. Sanitizér povolí `span` len s triedou `notice`, farba je sémantický token (napr. `text-destructive`) v `theme.css`. Žiadne voľné farby ani `style`.
 - HTML sa sanitizuje cez `sanitizeInfoHtml` **pri ukladaní aj pri zobrazení**. Komponent je znovupoužiteľný pre `infoHtml` aj neskôr `propositionsHtml`.
 
+### Kontakt a mapy
+
+- Stránka `/kontakt` sa spravuje v `/admin/kontakt` (odkaz zo sekcie „Kontakt“ v `/admin`). Text píše admin v `RichTextEditor` ako ostatné texty; telefónne čísla a adresy sú obyčajný text. Sanitizér povoľuje len `http`, `https` a `mailto`, takže odkaz `tel:` by sa vyhodil.
+- Google Maps sa **nevkladá do Tiptapu**, aby sanitizér nemusel povoliť `iframe`. Mapa je samostatné pole formulára. Admin ju vloží cez Google Maps (Zdieľať → Vložiť mapu) ako celý `<iframe>` kód alebo len adresu zo `src`.
+- Mapový modul je univerzálny, aby sa použil aj na ukážku trate (`Route.mapEmbedUrl` už v schéme je):
+  - `$lib/utils/googleMaps.ts`: `parseMapEmbedUrl(input)` vytiahne adresu z `<iframe>` kódu a vráti ju len ak ide o `https://www.google.com/maps/embed...` alebo `/maps/d/embed...`, inak `null`. Žiadna iná stránka sa tak nedá zobraziť v iframe.
+  - `atoms/MapEmbed.svelte`: zobrazí iframe (`loading="lazy"`, `sandbox`, pomer 16:9). Berie `url`, `title`, `class`.
+  - `molecules/MapEmbedInput.svelte`: pole na vloženie kódu so živým náhľadom a chybovou hláškou. Berie `name`, `value`, `label`.
+- Adresa sa overuje pri ukladaní (neplatná vráti 400) aj pri zobrazení.
+
 ## 3. Checklist implementácie (Kroky pre agenta)
 
 - [x] 1. Prihlásenie: `hooks.server.ts`, `locals.isAdmin`, `ADMIN_PASSWORD` / `ADMIN_SESSION_SECRET`, limit pokusov, `AdminCorner.svelte` s dialógom, prázdna stránka `/admin` s odhlásením, 404 pre neprihlásených. `.env.example`.
@@ -107,9 +119,10 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 - [x] 7. Hero: migrácia `SiteSetting` a `heroTitle`, formulár (logo, ročník, h1, dátum), Hero a Navbar čítajú logo a h1 z DB s fallbackom na konštanty.
 - [x] 8. Fotky slidera (globálne): nahrať (s povinným `alt`), zapnúť/vypnúť `isActive`, zmeniť poradie, zmazať (aj súbor). Jedna sekcia v `/admin`.
 - [x] 9. Verejný archív: `/rocniky`, `/rocnik/[year]` (Hero bez odpočtu, `EditionInfo`, tlačidlo „Fotogaléria“ z `galleryUrl`), odkaz „Ročníky“ v Navbare, pole `galleryUrl` v admine s validáciou `https://`, 404 pre neexistujúci rok.
-- [x] 10. Sponzori: pridať s logom alebo len názvom, `webUrl`, výber radu (`top` / `bottom`), zmazať, zmeniť poradie. Migrácia `row`, `SponsorMarquee` číta rad z `row`.
+- [x] 10. Sponzori: pridať s logom alebo len názvom, `webUrl`, výber radu (`top` / `bottom`), zmazať, zmeniť poradie. Migrácia `row`, `SponsorMarquee` číta rad z `row`. Migrácia `isMain` a v admine prepínač „Označiť ako hlavného“ s kontrolou „Hlavný sponzor“ pri pridávaní.
 - [x] 11. Coolify: `Dockerfile` (multi-stage, nie-root, migrácie pri štarte), `.dockerignore`, popis premenných a trvalého úložiska v README. Overiť lokálne cez `docker build` a `docker run -v`: nahrať fotku, vytvoriť ročník, kontajner zahodiť a znova spustiť; dáta ostanú.
-- [ ] 12. `bun run check`, `bun run lint`, Prettier a prechod celým adminom na dev serveri (prihlásenie, každá sekcia, zlé heslo, neprihlásený na `/admin`, čistá databáza bez ročníka, archív: starý ročník s odkazom na galériu aj bez neho).
+- [x] 12. `bun run check`, `bun run lint`, Prettier a prechod celým adminom na dev serveri (prihlásenie, každá sekcia, zlé heslo, neprihlásený na `/admin`, čistá databáza bez ročníka, archív: starý ročník s odkazom na galériu aj bez neho).
+- [x] 13. Kontakt a mapy: migrácie `SiteSetting.contactHtml` a `contactMapUrl`, `/admin/kontakt` (editor a pole na mapu), verejná `/kontakt`, univerzálny modul `parseMapEmbedUrl`, `MapEmbed`, `MapEmbedInput`.
 
 ## 4. Čo nerobiť (Non-Goals & Constraints)
 
@@ -139,6 +152,8 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 12. **Verejný archív** je súčasťou tohto modulu (`/rocniky`, `/rocnik/[year]`).
 13. **Fotky**: jeden globálny slider, fotky sa nahrávajú na disk servera. Minulé ročníky nemajú vlastné fotky v aplikácii, len odkaz `galleryUrl` na Google Disk. **Sponzori** sú globálni mimo ročníkov.
 14. **Staré súbory**: pri nahradení loga alebo zmazaní fotky sa starý súbor zmaže hneď.
+15. **Kontakt je globálny**: jeden text a jedna mapa pre celý web v `SiteSetting`, nie per ročník.
+16. **Mapa mimo Tiptapu**: ukladá sa len overená adresa Google Maps embed, nie HTML s `iframe`. Modul je pripravený aj pre trasy.
 
 ## 6. Otvorené otázky
 
