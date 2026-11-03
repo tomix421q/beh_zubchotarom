@@ -96,7 +96,11 @@
 
 							<form method="POST" action="?/deleteEdition" use:enhance class="flex gap-2">
 								<input type="hidden" name="id" value={edition.id} />
-								<ConfirmDeleteButton size="sm" confirmLabel="Zmazať aj trasy a štatistiky?" />
+								<ConfirmDeleteButton
+									size="sm"
+									title="Zmazať ročník {edition.year}?"
+									description="Zmažú sa aj jeho trasy a štatistiky. Túto akciu nie je možné vrátiť."
+								/>
 							</form>
 						</div>
 					</li>
@@ -207,7 +211,7 @@
 								↓
 							</Button>
 
-							<ConfirmDeleteButton formaction="?/deletePhoto" size="sm" />
+							<ConfirmDeleteButton formaction="?/deletePhoto" size="sm" title="Zmazať fotku?" />
 						</form>
 					</li>
 				{/each}
@@ -328,7 +332,11 @@
 										↓
 									</Button>
 
-									<ConfirmDeleteButton formaction="?/deleteSponsor" size="sm" />
+									<ConfirmDeleteButton
+										formaction="?/deleteSponsor"
+										size="sm"
+										title="Zmazať sponzora?"
+									/>
 								</form>
 							</li>
 						{/each}

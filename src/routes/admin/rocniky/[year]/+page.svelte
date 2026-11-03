@@ -119,7 +119,7 @@
 				</a>
 				<!-- eslint-enable svelte/no-navigation-without-resolve -->
 
-				<ConfirmDeleteButton size="sm" label="Odstrániť" confirmLabel="Naozaj odstrániť?" />
+				<ConfirmDeleteButton size="sm" label="Odstrániť" title="Odstrániť výsledky?" />
 			</form>
 		{:else}
 			<p class="text-muted-foreground">Výsledky zatiaľ nie sú zverejnené.</p>
@@ -270,7 +270,10 @@
 									↓
 								</Button>
 
-								<ConfirmDeleteButton formaction="?/deleteStat" />
+								<ConfirmDeleteButton
+									formaction="?/deleteStat"
+									title="Zmazať štatistiku „{stat.label}“?"
+								/>
 							</div>
 						</form>
 					</li>
