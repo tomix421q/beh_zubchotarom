@@ -1,4 +1,4 @@
-import { LOGO_URL } from '../lib/constants';
+import { BACKGROUND_IMAGE_URL, LOGO_URL } from '../lib/constants';
 import { prisma } from '../lib/server/db';
 import { sanitizeInfoHtml } from '../lib/server/sanitizeInfoHtml';
 import type { LayoutServerLoad } from './$types';
@@ -20,6 +20,9 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 		isAdmin: locals.isAdmin,
 		// The logo is set in the admin; until one is uploaded the bundled logo is used
 		logoUrl: settings?.logoUrl ?? LOGO_URL,
+		// The video is optional; the image doubles as its fallback, so it always has a value
+		backgroundVideoUrl: settings?.backgroundVideoUrl ?? null,
+		backgroundImageUrl: settings?.backgroundImageUrl ?? BACKGROUND_IMAGE_URL,
 		sponsors,
 		edition: edition
 			? {

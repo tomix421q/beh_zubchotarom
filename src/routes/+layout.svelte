@@ -2,6 +2,7 @@
 	import './../lib/styles/layout.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import AdminCorner from '#lib/components/organism/AdminCorner.svelte';
+	import BackgroundMedia from '#lib/components/organism/BackgroundMedia.svelte';
 	import Footer from '#lib/components/organism/Footer.svelte';
 	import Navbar from '#lib/components/organism/Navbar.svelte';
 	import { afterNavigate } from '$app/navigation';
@@ -22,7 +23,13 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="min-h-dvh bg-[url(/bg.jpg)] bg-cover bg-center">
+<!-- isolate keeps the fixed background behind the page content but inside this wrapper -->
+<div class="isolate min-h-dvh">
+	<!-- A new video in the admin starts over, so the admin sees how it plays -->
+	{#key data.backgroundVideoUrl}
+		<BackgroundMedia videoUrl={data.backgroundVideoUrl} imageUrl={data.backgroundImageUrl} />
+	{/key}
+
 	<div class="dark flex min-h-dvh flex-col bg-background/60 text-foreground">
 		<AdminCorner isAdmin={data.isAdmin} />
 		<Navbar logoUrl={data.logoUrl} />

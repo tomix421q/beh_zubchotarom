@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
+import { mkdir, rm, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { Readable } from 'node:stream';
 import { UPLOADS_DIR } from '$app/env/private';
 
 const UPLOAD_URL_PREFIX = '/uploads/';
@@ -44,7 +46,40 @@ const PDF_TYPE: UploadType = {
 	matches: (bytes) => bytes.toString('latin1', 0, 5) === '%PDF-'
 };
 
-const UPLOAD_TYPES = [...IMAGE_TYPES, PDF_TYPE];
+const MP4_BRANDS = ['isom', 'iso2', 'mp41', 'mp42', 'avc1', 'M4V '];
+
+// Walks the top-level boxes of an mp4: the "moov" box must come before "mdat" (the "faststart" layout),
+// otherwise the browser has to download the whole file before it can start playing
+function hasFaststartLayout(bytes: Buffer): boolean {
+	let offset = 0;
+
+	while (offset + 8 <= bytes.length) {
+		const type = bytes.toString('latin1', offset + 4, offset + 8);
+		if (type === 'moov') return true;
+		if (type === 'mdat') return false;
+
+		let size = bytes.readUInt32BE(offset);
+		// 1 means the real size follows as 64 bits, 0 means the box runs to the end of the file
+		if (size === 1 && offset + 16 <= bytes.length) size = Number(bytes.readBigUInt64BE(offset + 8));
+		if (size < 8) return false;
+
+		offset += size;
+	}
+
+	return false;
+}
+
+// AVIF is an "ftyp" file too, but with its own brands, so the brand list keeps it from passing as video
+const VIDEO_TYPE: UploadType = {
+	mime: 'video/mp4',
+	ext: 'mp4',
+	matches: (bytes) =>
+		bytes.toString('latin1', 4, 8) === 'ftyp' &&
+		MP4_BRANDS.includes(bytes.toString('latin1', 8, 12)) &&
+		hasFaststartLayout(bytes)
+};
+
+const UPLOAD_TYPES = [...IMAGE_TYPES, PDF_TYPE, VIDEO_TYPE];
 
 // Only names in this shape are served or deleted; the pattern also blocks path traversal like "../"
 const UPLOAD_NAME = new RegExp(
@@ -88,6 +123,15 @@ export function saveImage(file: FormDataEntryValue | null) {
 	});
 }
 
+export function saveVideo(file: FormDataEntryValue | null) {
+	return saveFile(file, [VIDEO_TYPE], {
+		missing: 'Vyberte video.',
+		tooBig: 'Video môže mať najviac 5 MB.',
+		type: 'Podporovaný je len formát mp4.',
+		invalid: 'Súbor nie je platné mp4 video. Zakódujte ho s parametrom -movflags +faststart.'
+	});
+}
+
 export function savePdf(file: FormDataEntryValue | null) {
 	return saveFile(file, [PDF_TYPE], {
 		missing: 'Vyberte súbor PDF.',
@@ -108,14 +152,16 @@ export async function deleteUpload(url: string | null | undefined): Promise<void
 }
 
 // Null when the name is not one this module creates or the file is missing
-export async function readUpload(
-	name: string
-): Promise<{ body: Uint8Array<ArrayBuffer>; mime: string } | null> {
+export async function statUpload(name: string): Promise<{ size: number; mime: string } | null> {
 	if (!UPLOAD_NAME.test(name)) return null;
 
 	const uploadType = UPLOAD_TYPES.find((type) => name.endsWith(`.${type.ext}`));
-	const body = await readFile(uploadPath(name)).catch(() => null);
+	const info = await stat(uploadPath(name)).catch(() => null);
 
-	// A plain Uint8Array is what Response accepts as a body
-	return body && uploadType ? { body: new Uint8Array(body), mime: uploadType.mime } : null;
+	return info?.isFile() && uploadType ? { size: info.size, mime: uploadType.mime } : null;
+}
+
+// Streams the bytes start..end (both included), so a video is never held in memory and can be played from any point
+export function streamUpload(name: string, start: number, end: number): ReadableStream {
+	return Readable.toWeb(createReadStream(uploadPath(name), { start, end })) as ReadableStream;
 }
