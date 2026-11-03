@@ -1,0 +1,25 @@
+# Secrets and local state never go into the image
+.env
+.env.*
+!.env.example
+dev.db*
+uploads
+
+# Rebuilt inside the image
+node_modules
+build
+.svelte-kit
+src/lib/generated
+
+# Not needed to build or run
+.git
+.github
+.claude
+.agents
+.windsurf
+.vscode
+.scratch
+docs
+.DS_Store
+Dockerfile
+.dockerignore

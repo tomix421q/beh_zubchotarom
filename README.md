@@ -1,61 +1,6 @@
-# sv
-
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-bun x sv@1.2.0 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:typography" enhanced-img sveltekit-adapter="adapter:bun" --install bun ./
-```
-
-## Adding features
-
-Add features to your project with `sv add`:
-
-```sh
-npx sv add
-```
-
-For example, to add Tailwind CSS:
-
-```sh
-npx sv add tailwindcss
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
 ## Environment variables
 
-Copy `.env.example` to `.env` for local development. In production (Coolify) set the same variables in the app's environment.
+Copy `.env.example` to `.env` for local development. In production (Coolify) set them in the app's environment; the Docker image already defaults the last three, see [Deploying on Coolify](#deploying-on-coolify).
 
 | Variable               | Purpose                                                                         | Default         |
 | ---------------------- | ------------------------------------------------------------------------------- | --------------- |
@@ -66,3 +11,29 @@ Copy `.env.example` to `.env` for local development. In production (Coolify) set
 | `BODY_SIZE_LIMIT`      | Largest request body the production server accepts; set `6M` so 5 MB photos fit | `512K`          |
 
 In production, point `DATABASE_URL` and `UPLOADS_DIR` at a persistent volume (on Coolify `file:/data/app.db` and `/data/uploads`). Otherwise the database and uploads are lost on every redeploy. `DATABASE_URL` must also be set where `prisma migrate` runs.
+
+## Deploying on Coolify
+
+Coolify builds the app from the `Dockerfile` (multi-stage: Bun builds, plain Node runs the `adapter-node` output as the non-root `node` user). There is no `docker-compose.yml`; the volume and variables are set in the Coolify UI.
+
+1. Create the application from this repository with the **Dockerfile** build pack and port `3000`.
+2. Add **Persistent Storage** mounted at `/data`. It holds the SQLite database (`/data/app.db`) and the uploaded files (`/data/uploads`). Everything else in the container is recreated on every deploy.
+3. Set `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` (see [Environment variables](#environment-variables)). `DATABASE_URL` (`file:/data/app.db`), `UPLOADS_DIR` (`/data/uploads`) and `BODY_SIZE_LIMIT` (`6M`) already default to the right values in the image.
+
+Notes:
+
+- Pending migrations (`prisma migrate deploy`) run on every container start. The seed is never run in production; the admin creates the first edition in `/admin`.
+- The app needs no `ORIGIN` variable. `adapter-node` takes the origin from the `Host` header and assumes `https`, which is what Coolify's proxy serves. If the site is served over plain `http`, every admin form is rejected as cross-site; set `PROTOCOL_HEADER=x-forwarded-proto` and `HOST_HEADER=x-forwarded-host` to fix that.
+- The app user has uid 1000. A named Docker volume inherits the ownership of `/data` from the image. If the storage is a bind mount owned by root, run `chown -R 1000:1000` on it, otherwise the migration cannot create the database.
+- Backups: back up the persistent storage mounted at `/data` (Coolify can schedule this).
+
+To try the image locally:
+
+```sh
+docker build -t beh-zubchotarom .
+docker run --rm -p 3000:3000 -v bz-data:/data \
+  -e ADMIN_PASSWORD=change-me -e ADMIN_SESSION_SECRET=$(openssl rand -hex 32) \
+  beh-zubchotarom
+```
+
+Over plain `http://localhost` the admin login cookie is `Secure`, so the browser will not keep it; test the admin behind HTTPS or with the dev server.

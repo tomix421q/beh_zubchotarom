@@ -67,8 +67,8 @@ Nasadenie ide cez Coolify z `Dockerfile`. Kontajner sa pri každom nasadení vyt
 - **Nahrané súbory**: `UPLOADS_DIR=/data/uploads`.
 - **Databáza SQLite**: dnes je cesta natvrdo `file:./dev.db` v `src/lib/server/db.ts` aj v `prisma.config.ts`. Prepne sa na `DATABASE_URL` (lokálne `file:./dev.db`, na Coolify `file:/data/app.db`). Bez toho by sa pri každom nasadení stratili aj ročníky, štatistiky, sponzori a texty z adminu, nielen obrázky.
 - `Dockerfile` je multi-stage s `adapter-node`, beží pod nie-root používateľom, ktorý má právo zapisovať do `/data`. Samostatný `docker-compose.yml` netreba, Coolify spravuje volume a premenné prostredia v UI. Do imidžu sa tajomstvá nedostanú (`.dockerignore` vynechá `.env`, `dev.db`, `uploads`).
-- Premenné nastavené v Coolify: `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `DATABASE_URL`, `UPLOADS_DIR`, `BODY_SIZE_LIMIT`, `ORIGIN` (adapter-node ho potrebuje za reverzným proxy kvôli ochrane formulárov proti CSRF).
-- Migrácie bežia pri štarte kontajnera (`prisma migrate deploy`). `prisma` je dnes devDependency, preto musí byť dostupné v runtime imidži.
+- Premenné nastavené v Coolify: `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `DATABASE_URL`, `UPLOADS_DIR` a `BODY_SIZE_LIMIT`. `ORIGIN` netreba: `adapter-node` 6 ho nečíta a odvodzuje pôvod z hlavičky `Host` s protokolom `https`.
+- Migrácie bežia pri štarte kontajnera (`prisma migrate deploy`). `prisma` je v `dependencies`, aby bol dostupný v runtime imidži.
 - Seed sa v produkcii nespúšťa. Prvý ročník vytvorí admin cez `/admin`.
 - Zálohovanie: stačí zálohovať trvalé úložisko `/data` (Coolify vie aj naplánované zálohy).
 
@@ -108,7 +108,7 @@ Každá sekcia má vlastné form actions (`?/saveHero`, `?/addStat`, `?/uploadPh
 - [x] 8. Fotky slidera (globálne): nahrať (s povinným `alt`), zapnúť/vypnúť `isActive`, zmeniť poradie, zmazať (aj súbor). Jedna sekcia v `/admin`.
 - [x] 9. Verejný archív: `/rocniky`, `/rocnik/[year]` (Hero bez odpočtu, `EditionInfo`, tlačidlo „Fotogaléria“ z `galleryUrl`), odkaz „Ročníky“ v Navbare, pole `galleryUrl` v admine s validáciou `https://`, 404 pre neexistujúci rok.
 - [x] 10. Sponzori: pridať s logom alebo len názvom, `webUrl`, výber radu (`top` / `bottom`), zmazať, zmeniť poradie. Migrácia `row`, `SponsorMarquee` číta rad z `row`.
-- [ ] 11. Coolify: `Dockerfile` (multi-stage, nie-root, migrácie pri štarte), `.dockerignore`, popis premenných a trvalého úložiska v README. Overiť lokálne cez `docker build` a `docker run -v`: nahrať fotku, vytvoriť ročník, kontajner zahodiť a znova spustiť; dáta ostanú.
+- [x] 11. Coolify: `Dockerfile` (multi-stage, nie-root, migrácie pri štarte), `.dockerignore`, popis premenných a trvalého úložiska v README. Overiť lokálne cez `docker build` a `docker run -v`: nahrať fotku, vytvoriť ročník, kontajner zahodiť a znova spustiť; dáta ostanú.
 - [ ] 12. `bun run check`, `bun run lint`, Prettier a prechod celým adminom na dev serveri (prihlásenie, každá sekcia, zlé heslo, neprihlásený na `/admin`, čistá databáza bez ročníka, archív: starý ročník s odkazom na galériu aj bez neho).
 
 ## 4. Čo nerobiť (Non-Goals & Constraints)
