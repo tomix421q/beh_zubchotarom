@@ -30,7 +30,8 @@
 	]);
 </script>
 
-<section class="glassCard overflow-hidden px-6 py-12 text-center sm:py-16">
+<!-- wrap-break-word keeps a long title or heroTitle word inside the card instead of spilling out -->
+<section class="glassCard px-6 py-12 text-center wrap-break-word sm:py-16">
 	<img
 		src={logoUrl}
 		alt="Logo Behu Zubrohlava"
@@ -41,7 +42,7 @@
 	<p class="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
 		{edition.editionNumber}. ročník
 	</p>
-	<h1 class="mt-2 text-4xl font-extrabold text-foreground sm:text-5xl">
+	<h1 class="mt-2 text-4xl font-extrabold text-balance text-foreground sm:text-5xl">
 		{edition.heroTitle ?? `${SITE_NAME} ${edition.year}`}
 	</h1>
 	<p class="mt-4 text-lg text-muted-foreground">{formatEventDate(edition.eventDate)}</p>

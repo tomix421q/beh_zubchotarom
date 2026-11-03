@@ -13,6 +13,8 @@
 	let isHovered = $state(false);
 	let hasFocus = $state(false);
 	let prefersReducedMotion = $state(false);
+	let wrapper: HTMLDivElement;
+	let isRevealed = $state(false);
 
 	// Hover and touch both count as pointer enter, so touching the slider pauses it until the finger lifts
 	const isPaused = $derived(isPausedByUser || isHovered || hasFocus || prefersReducedMotion);
@@ -24,6 +26,21 @@
 		const onChange = () => (prefersReducedMotion = query.matches);
 		query.addEventListener('change', onChange);
 		return () => query.removeEventListener('change', onChange);
+	});
+
+	// The slider stays hidden until half of it is on screen, so a half-visible slider never shows at the fold
+	$effect(() => {
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+
+				isRevealed = true;
+				observer.disconnect();
+			},
+			{ threshold: 0.5 }
+		);
+		observer.observe(wrapper);
+		return () => observer.disconnect();
 	});
 
 	$effect(() => {
@@ -38,66 +55,74 @@
 	}
 </script>
 
-<section
-	aria-roledescription="carousel"
-	aria-label="Fotografie z pretekov"
-	class="glassCard flex flex-col gap-3 p-4"
-	onpointerenter={() => (isHovered = true)}
-	onpointerleave={() => (isHovered = false)}
-	onfocusin={() => (hasFocus = true)}
-	onfocusout={() => (hasFocus = false)}
+<div
+	bind:this={wrapper}
+	class={[
+		'transition-[opacity,translate] duration-700 motion-reduce:transition-none',
+		isRevealed ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+	]}
 >
-	<div class="relative aspect-video overflow-hidden rounded-xl border border-border bg-card">
-		{#each photos as photo, position (photo.id)}
-			<img
-				src={photo.url}
-				alt={photo.alt}
-				aria-hidden={position !== index}
-				loading="lazy"
-				class={[
-					'absolute inset-0 size-full object-cover transition-opacity duration-700',
-					position === index ? 'opacity-100' : 'opacity-0'
-				]}
-			/>
-		{/each}
-	</div>
-
-	<div class="flex items-center justify-between gap-3">
-		<div class="flex items-center gap-1">
-			<Button
-				variant="ghost"
-				size="icon"
-				aria-label="Predchádzajúca fotka"
-				onclick={() => showPhoto(index - 1)}
-			>
-				&lsaquo;
-			</Button>
-			<Button
-				variant="ghost"
-				size="icon"
-				aria-label="Ďalšia fotka"
-				onclick={() => showPhoto(index + 1)}
-			>
-				&rsaquo;
-			</Button>
-		</div>
-
-		<div class="flex items-center gap-2">
+	<section
+		aria-roledescription="carousel"
+		aria-label="Fotografie z pretekov"
+		class="glassCard flex flex-col gap-3 p-4"
+		onpointerenter={() => (isHovered = true)}
+		onpointerleave={() => (isHovered = false)}
+		onfocusin={() => (hasFocus = true)}
+		onfocusout={() => (hasFocus = false)}
+	>
+		<div class="relative aspect-video overflow-hidden rounded-xl border border-border bg-card">
 			{#each photos as photo, position (photo.id)}
-				<button
-					type="button"
-					aria-label="Fotka {position + 1} z {photos.length}"
-					aria-current={position === index}
-					class="size-2.5 rounded-full bg-muted-foreground/40 aria-[current=true]:bg-primary"
-					onclick={() => showPhoto(position)}
-				></button>
+				<img
+					src={photo.url}
+					alt={photo.alt}
+					aria-hidden={position !== index}
+					loading="lazy"
+					class={[
+						'absolute inset-0 size-full object-cover transition-opacity duration-700',
+						position === index ? 'opacity-100' : 'opacity-0'
+					]}
+				/>
 			{/each}
 		</div>
 
-		<PauseButton
-			isPaused={isPausedByUser}
-			label="slider"
-			onclick={() => (isPausedByUser = !isPausedByUser)}
-		/>
-	</div>
-</section>
+		<div class="flex items-center justify-between gap-3">
+			<div class="flex items-center gap-1">
+				<Button
+					variant="ghost"
+					size="icon"
+					aria-label="Predchádzajúca fotka"
+					onclick={() => showPhoto(index - 1)}
+				>
+					&lsaquo;
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
+					aria-label="Ďalšia fotka"
+					onclick={() => showPhoto(index + 1)}
+				>
+					&rsaquo;
+				</Button>
+			</div>
+
+			<div class="flex items-center gap-2">
+				{#each photos as photo, position (photo.id)}
+					<button
+						type="button"
+						aria-label="Fotka {position + 1} z {photos.length}"
+						aria-current={position === index}
+						class="size-2.5 rounded-full bg-muted-foreground/40 aria-[current=true]:bg-primary"
+						onclick={() => showPhoto(position)}
+					></button>
+				{/each}
+			</div>
+
+			<PauseButton
+				isPaused={isPausedByUser}
+				label="slider"
+				onclick={() => (isPausedByUser = !isPausedByUser)}
+			/>
+		</div>
+	</section>
+</div>
