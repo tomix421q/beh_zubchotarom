@@ -21,7 +21,7 @@
 			bind:value={text}
 			rows="3"
 			placeholder="Vložte kód z Google Maps (Zdieľať → Vložiť mapu) alebo len adresu z src"
-			class="inputNormalize"></textarea>
+			class="inputNormalize h-auto"></textarea>
 	</Field>
 
 	{#if url}

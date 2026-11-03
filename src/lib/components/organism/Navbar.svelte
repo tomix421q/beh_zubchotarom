@@ -10,9 +10,8 @@
 	// activePrefix lets a link stay active on pages that live under another path, like /rocnik/2025 for Ročníky
 	const sectionLinks = [
 		{ href: resolve('/'), label: 'Domov' },
-		{ href: resolve('/propozicie'), label: 'Propozície' },
 		{ href: resolve('/trasy'), label: 'Trasy' },
-		{ href: resolve('/rocniky'), label: 'Ročníky', activePrefix: '/rocnik' },
+		{ href: resolve('/vysledky'), label: 'Ročníky', activePrefix: '/rocnik' },
 		{ href: resolve('/kontakt'), label: 'Kontakt' }
 	];
 
