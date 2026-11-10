@@ -4,10 +4,18 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import ConfirmDeleteButton from '#lib/components/atoms/ConfirmDeleteButton.svelte';
 	import Field from '#lib/components/atoms/Field.svelte';
+	import SaveButton from '#lib/components/atoms/SaveButton.svelte';
+	import { saveStatus } from '#lib/utils/front/saveStatus.svelte.js';
 	import { SITE_NAME } from '../../../lib/constants';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
+
+	// One tracker per form, so only the button that was pressed confirms the save
+	const logoSave = saveStatus();
+	const videoSave = saveStatus();
+	const imageSave = saveStatus();
+	const photoSave = saveStatus();
 </script>
 
 <svelte:head>
@@ -39,7 +47,7 @@
 			method="POST"
 			action="?/saveLogo"
 			enctype="multipart/form-data"
-			use:enhance
+			use:enhance={logoSave.submit}
 			class="flex flex-wrap items-end gap-4"
 		>
 			<Field label="Nové logo">
@@ -52,7 +60,7 @@
 				/>
 			</Field>
 
-			<Button type="submit" size="sm">Uložiť logo</Button>
+			<SaveButton status={logoSave.status} label="Uložiť logo" size="sm" />
 		</form>
 	</section>
 
@@ -101,14 +109,14 @@
 				method="POST"
 				action="?/uploadBackgroundVideo"
 				enctype="multipart/form-data"
-				use:enhance
+				use:enhance={videoSave.submit}
 				class="flex flex-wrap items-end gap-4"
 			>
 				<Field label={data.backgroundVideoUrl ? 'Nové video' : 'Video'}>
 					<input name="video" type="file" accept="video/mp4" required class="fileInputNormalize" />
 				</Field>
 
-				<Button type="submit" size="sm">Uložiť video</Button>
+				<SaveButton status={videoSave.status} label="Uložiť video" size="sm" />
 			</form>
 		</div>
 
@@ -136,7 +144,7 @@
 				method="POST"
 				action="?/uploadBackgroundImage"
 				enctype="multipart/form-data"
-				use:enhance
+				use:enhance={imageSave.submit}
 				class="flex flex-wrap items-end gap-4"
 			>
 				<Field label="Nový obrázok">
@@ -149,7 +157,7 @@
 					/>
 				</Field>
 
-				<Button type="submit" size="sm">Uložiť obrázok</Button>
+				<SaveButton status={imageSave.status} label="Uložiť obrázok" size="sm" />
 			</form>
 		</div>
 	</section>
@@ -236,7 +244,7 @@
 			method="POST"
 			action="?/uploadPhoto"
 			enctype="multipart/form-data"
-			use:enhance
+			use:enhance={photoSave.submit}
 			class="grid gap-3 border-t border-border pt-4 sm:grid-cols-[1fr_1fr_auto]"
 		>
 			<Field label="Fotka">
@@ -260,7 +268,7 @@
 			</Field>
 
 			<div class="flex items-end">
-				<Button type="submit">Nahrať</Button>
+				<SaveButton status={photoSave.status} label="Nahrať" />
 			</div>
 		</form>
 	</section>

@@ -20,6 +20,14 @@ _Avoid_: Médiá, Fotky (logo a pozadie nie sú fotky)
 Video a obrázok na pozadí celého webu. Video sa raz prehrá po načítaní stránky, obrázok ho nahrádza, keď sa video nedá alebo nestihne prehrať.
 _Avoid_: Background, hero video
 
+**Farba textu**:
+Jedna zo štyroch pevných farieb (Červená, Žltá, Zelená, Sivá), ktorou organizátor zvýrazní časť textu ročníka, registrácie alebo kontaktu. Ľubovoľnú farbu si zvoliť nemôže.
+_Avoid_: Upozornenie (pôvodný jediný červený štýl), vlastná farba
+
+**Obtekanie**:
+Obrázok v texte umiestnený vľavo alebo vpravo, okolo ktorého tečie text. Platí len na širších obrazovkách, na mobile má obrázok vždy celú šírku.
+_Avoid_: Float, zarovnanie textu
+
 **Rozcestník**:
 Úvodná stránka administrácie `/admin` s dlaždicami vedúcimi na jednotlivé časti (Ročníky, Vzhľad, Sponzori, Kontakt).
 _Avoid_: Dashboard, prehľad

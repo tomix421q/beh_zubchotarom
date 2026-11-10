@@ -5,10 +5,20 @@
 	import ConfirmDeleteButton from '#lib/components/atoms/ConfirmDeleteButton.svelte';
 	import Field from '#lib/components/atoms/Field.svelte';
 	import RichTextEditor from '#lib/components/molecules/RichTextEditor.svelte';
+	import SaveButton from '#lib/components/atoms/SaveButton.svelte';
+	import { saveStatus } from '#lib/utils/front/saveStatus.svelte.js';
 	import { FIRST_EDITION_YEAR, SITE_NAME } from '../../../../lib/constants';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
+
+	// One tracker per form, so only the button that was pressed confirms the save
+	const editionSave = saveStatus();
+	const pdfSave = saveStatus();
+	const resultsUrlSave = saveStatus();
+	const registrationSave = saveStatus();
+	const statSave = saveStatus();
+	const infoSave = saveStatus();
 </script>
 
 <svelte:head>
@@ -25,7 +35,12 @@
 	<section class="glassCard flex flex-col gap-4 p-6">
 		<h2 class="text-lg font-semibold">Základné údaje</h2>
 
-		<form method="POST" action="?/saveEdition" use:enhance class="flex flex-col gap-4">
+		<form
+			method="POST"
+			action="?/saveEdition"
+			use:enhance={editionSave.submit}
+			class="flex flex-col gap-4"
+		>
 			<div class="grid gap-4 sm:grid-cols-3">
 				<Field label="Rok">
 					<input
@@ -85,7 +100,7 @@
 			{/if}
 
 			<div class="flex justify-end">
-				<Button type="submit">Uložiť</Button>
+				<SaveButton status={editionSave.status} />
 			</div>
 		</form>
 	</section>
@@ -129,7 +144,7 @@
 			method="POST"
 			action="?/uploadResultsPdf"
 			enctype="multipart/form-data"
-			use:enhance
+			use:enhance={pdfSave.submit}
 			class="flex flex-wrap items-end gap-4"
 		>
 			<Field label="Nahrať PDF">
@@ -142,13 +157,13 @@
 				/>
 			</Field>
 
-			<Button type="submit" size="sm">Nahrať PDF</Button>
+			<SaveButton status={pdfSave.status} label="Nahrať PDF" size="sm" />
 		</form>
 
 		<form
 			method="POST"
 			action="?/saveResultsUrl"
-			use:enhance
+			use:enhance={resultsUrlSave.submit}
 			class="flex flex-wrap items-end gap-4"
 		>
 			<Field label="Alebo odkaz na výsledky">
@@ -161,7 +176,7 @@
 				/>
 			</Field>
 
-			<Button type="submit" size="sm">Uložiť odkaz</Button>
+			<SaveButton status={resultsUrlSave.status} label="Uložiť odkaz" size="sm" />
 		</form>
 	</section>
 
@@ -170,7 +185,12 @@
 		<section class="glassCard flex flex-col gap-4 p-6">
 			<h2 class="text-lg font-semibold">Registrácia</h2>
 
-			<form method="POST" action="?/saveRegistration" use:enhance class="flex flex-col gap-4">
+			<form
+				method="POST"
+				action="?/saveRegistration"
+				use:enhance={registrationSave.submit}
+				class="flex flex-col gap-4"
+			>
 				<label class="flex items-center gap-3 text-sm font-medium">
 					<input
 						name="registrationOpen"
@@ -182,7 +202,7 @@
 				</label>
 
 				<div class="flex justify-end">
-					<Button type="submit">Uložiť</Button>
+					<SaveButton status={registrationSave.status} />
 				</div>
 			</form>
 
@@ -216,7 +236,8 @@
 						<form
 							method="POST"
 							action="?/saveStat"
-							use:enhance
+							data-save-key={stat.id}
+							use:enhance={statSave.submit}
 							class="grid gap-3 sm:grid-cols-[1fr_1fr_auto]"
 						>
 							<input type="hidden" name="id" value={stat.id} />
@@ -242,7 +263,7 @@
 							</Field>
 
 							<div class="flex flex-wrap items-end gap-2">
-								<Button type="submit">Uložiť</Button>
+								<SaveButton status={statSave.statusOf(stat.id)} />
 
 								<Button
 									type="submit"
@@ -310,11 +331,16 @@
 	<section class="glassCard flex flex-col gap-4 p-6">
 		<h2 class="text-lg font-semibold">Informácie o ročníku</h2>
 
-		<form method="POST" action="?/saveInfo" use:enhance class="flex flex-col gap-4">
+		<form
+			method="POST"
+			action="?/saveInfo"
+			use:enhance={infoSave.submit}
+			class="flex flex-col gap-4"
+		>
 			<RichTextEditor name="html" value={data.edition.infoHtml ?? ''} />
 
 			<div class="flex justify-end">
-				<Button type="submit">Uložiť</Button>
+				<SaveButton status={infoSave.status} />
 			</div>
 		</form>
 	</section>

@@ -9,6 +9,7 @@ import {
 	syncCurrentEdition
 } from '../../../../lib/server/editions';
 import { readInfoHtml } from '../../../../lib/server/sanitizeInfoHtml';
+import { sweepUnusedUploads } from '../../../../lib/server/uploadCleanup';
 import { deleteUpload, savePdf } from '../../../../lib/server/uploads';
 import { formatBratislavaDateTime } from '../../../../lib/utils/dateUtils';
 import type { Actions, PageServerLoad } from './$types';
@@ -124,6 +125,7 @@ export const actions: Actions = {
 		const infoHtml = readInfoHtml(await request.formData(), 'html');
 
 		await prisma.edition.update({ where: { id: edition.id }, data: { infoHtml } });
+		await sweepUnusedUploads();
 	},
 
 	addStat: async ({ request, locals, params }) => {

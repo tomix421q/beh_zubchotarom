@@ -8,7 +8,75 @@
 @plugin '@tailwindcss/typography';
 @import './theme.css';
 
-/* Warning text from the editor; global because it arrives through {@html} */
-.notice {
+/* Rich text from the editor arrives through {@html}, so its classes are styled globally.
+   Text colours: "notice" is the older red style, kept so stored texts still show it */
+.notice,
+.textRed {
 	@apply text-destructive;
+}
+
+.textYellow {
+	@apply text-warning;
+}
+
+.textGreen {
+	@apply text-primary;
+}
+
+.textGray {
+	@apply text-muted-foreground;
+}
+
+/* Images are always full width on a phone; text flows around a left or right image from sm up */
+.prose img {
+	@apply my-4 h-auto max-w-full rounded-lg;
+}
+
+.prose img.imgFull {
+	@apply mx-auto block;
+}
+
+.prose img.imgLeft {
+	@apply sm:float-left sm:mt-1 sm:mr-6 sm:mb-3 sm:w-2/5;
+}
+
+.prose img.imgRight {
+	@apply sm:float-right sm:mt-1 sm:mb-3 sm:ml-6 sm:w-2/5;
+}
+
+/* A floating image never sticks out under the end of its text box */
+.prose::after {
+	content: '';
+	@apply clear-both block;
+}
+
+/* Tables scroll sideways on a phone instead of stretching the card */
+.prose table {
+	@apply my-4 block w-max max-w-full border-collapse overflow-x-auto rounded-lg;
+}
+
+/* A slightly darker surface than the glass card sets the table apart without a hard contrast */
+.prose :is(th, td) {
+	@apply border border-border bg-background/30 px-3 py-2 align-top;
+}
+
+.prose th {
+	@apply bg-background/50 text-left font-semibold;
+}
+
+.prose :is(th, td) > p {
+	@apply my-0;
+}
+
+/* Editor only: the picked image and the selected table cells are outlined */
+.ProseMirror img.ProseMirror-selectednode {
+	@apply outline-2 outline-offset-2 outline-ring;
+}
+
+.ProseMirror .selectedCell {
+	@apply bg-accent;
+}
+
+.ProseMirror .tableWrapper {
+	@apply overflow-x-auto;
 }

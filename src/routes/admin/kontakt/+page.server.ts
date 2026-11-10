@@ -3,6 +3,7 @@ import { requireAdmin } from '../../../lib/server/auth';
 import { prisma } from '../../../lib/server/db';
 import { parseMapEmbedUrl } from '../../../lib/utils/googleMaps';
 import { readInfoHtml } from '../../../lib/server/sanitizeInfoHtml';
+import { sweepUnusedUploads } from '../../../lib/server/uploadCleanup';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -37,7 +38,6 @@ export const actions: Actions = {
 			create: { id: 1, contactHtml, contactMapUrl },
 			update: { contactHtml, contactMapUrl }
 		});
-
-		return { saved: true };
+		await sweepUnusedUploads();
 	}
 };

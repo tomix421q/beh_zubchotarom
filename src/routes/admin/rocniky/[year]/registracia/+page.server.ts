@@ -2,6 +2,7 @@ import { requireAdmin } from '../../../../../lib/server/auth';
 import { prisma } from '../../../../../lib/server/db';
 import { findEditionByYear } from '../../../../../lib/server/editions';
 import { readInfoHtml } from '../../../../../lib/server/sanitizeInfoHtml';
+import { sweepUnusedUploads } from '../../../../../lib/server/uploadCleanup';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
@@ -19,7 +20,6 @@ export const actions: Actions = {
 		const registrationHtml = readInfoHtml(await request.formData(), 'html');
 
 		await prisma.edition.update({ where: { id: edition.id }, data: { registrationHtml } });
-
-		return { saved: true };
+		await sweepUnusedUploads();
 	}
 };

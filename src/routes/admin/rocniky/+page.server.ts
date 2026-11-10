@@ -7,6 +7,7 @@ import {
 	syncCurrentEdition
 } from '../../../lib/server/editions';
 import { prisma } from '../../../lib/server/db';
+import { sweepUnusedUploads } from '../../../lib/server/uploadCleanup';
 import type { Actions, PageServerLoad } from './$types';
 
 // A 404 instead of a redirect, so the existence of the admin area is not revealed
@@ -41,5 +42,7 @@ export const actions: Actions = {
 
 		await prisma.edition.delete({ where: { id: edition.id } });
 		await syncCurrentEdition();
+		// Images and files only this edition used are now unused
+		await sweepUnusedUploads();
 	}
 };

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { createReadStream } from 'node:fs';
-import { mkdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
 import { UPLOADS_DIR } from '$app/env/private';
@@ -164,4 +164,21 @@ export async function statUpload(name: string): Promise<{ size: number; mime: st
 // Streams the bytes start..end (both included), so a video is never held in memory and can be played from any point
 export function streamUpload(name: string, start: number, end: number): ReadableStream {
 	return Readable.toWeb(createReadStream(uploadPath(name), { start, end })) as ReadableStream;
+}
+
+// Every stored upload with its address and when it was written; files this module did not create are left out
+export async function listUploads(): Promise<{ name: string; url: string; modifiedAt: number }[]> {
+	const names = await readdir(UPLOADS_DIR).catch(() => [] as string[]);
+	const uploads = await Promise.all(
+		names
+			.filter((name) => UPLOAD_NAME.test(name))
+			.map(async (name) => {
+				const info = await stat(uploadPath(name)).catch(() => null);
+				return info?.isFile()
+					? { name, url: `${UPLOAD_URL_PREFIX}${name}`, modifiedAt: info.mtimeMs }
+					: null;
+			})
+	);
+
+	return uploads.filter((upload) => upload !== null);
 }
