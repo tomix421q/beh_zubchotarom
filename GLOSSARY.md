@@ -37,5 +37,9 @@ Obrázok v texte umiestnený vľavo alebo vpravo, okolo ktorého tečie text. Pl
 _Avoid_: Float, zarovnanie textu
 
 **Rozcestník**:
-Úvodná stránka administrácie `/admin` s dlaždicami vedúcimi na jednotlivé časti (Ročníky, Vzhľad, Sponzori, Kontakt).
+Úvodná stránka administrácie `/admin` s dlaždicami vedúcimi na jednotlivé časti (Ročníky, Vzhľad, Sponzori, O nás, Kontakt).
 _Avoid_: Dashboard, prehľad
+
+**O nás**:
+Príbeh klubu a zakladateľov, jeden text spoločný pre celý web. Nie je to Kontakt (rýchle údaje a mapa) ani Info o ročníku (text jedného ročníka).
+_Avoid_: About, Klub

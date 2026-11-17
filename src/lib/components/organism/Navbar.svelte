@@ -12,6 +12,7 @@
 		{ href: resolve('/'), label: 'Domov' },
 		{ href: resolve('/trasy'), label: 'Trasy' },
 		{ href: resolve('/vysledky'), label: 'Ročníky', activePrefix: '/rocnik' },
+		{ href: resolve('/o-nas'), label: 'O nás' },
 		{ href: resolve('/kontakt'), label: 'Kontakt' }
 	];
 

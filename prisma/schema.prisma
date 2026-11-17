@@ -60,6 +60,8 @@ model SiteSetting {
   logoUrl            String?
   // Text of the Kontakt page, written in the admin editor
   contactHtml        String?
+  // Text of the O nás page (the story of the club and its founders), written in the admin editor
+  aboutHtml          String?
   // Google Maps embed address shown under the contact text
   contactMapUrl      String?
   // Site background: a short mp4 that plays once, and an image shown while it loads or when it cannot play

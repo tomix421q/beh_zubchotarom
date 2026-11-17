@@ -32,6 +32,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		currentEdition,
 		photoCount,
 		sponsorCount,
+		hasAbout: Boolean(settings?.aboutHtml),
 		hasContact: Boolean(settings?.contactHtml || settings?.contactMapUrl)
 	};
 };

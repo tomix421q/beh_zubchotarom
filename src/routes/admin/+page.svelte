@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { CalendarDays, Handshake, Mail, Palette } from '@lucide/svelte';
+	import { CalendarDays, Handshake, Info, Mail, Palette } from '@lucide/svelte';
 	import { SITE_NAME } from '../../lib/constants';
 	import type { PageProps } from './$types';
 
@@ -74,7 +74,16 @@
 			<p class="mt-auto text-sm">Sponzorov: {data.sponsorCount}</p>
 		</a>
 
-		<a href={resolve('/admin/kontakt')} class="{tileClass} sm:col-span-2 lg:col-span-1">
+		<a href={resolve('/admin/o-nas')} class={tileClass}>
+			<Info class="size-8 text-primary" aria-hidden="true" />
+			<div>
+				<h2 class="text-lg font-semibold">O nás</h2>
+				<p class="text-sm text-muted-foreground">Príbeh klubu a zakladateľov.</p>
+			</div>
+			<p class="mt-auto text-sm">{data.hasAbout ? 'Vyplnené' : 'Zatiaľ prázdne'}</p>
+		</a>
+
+		<a href={resolve('/admin/kontakt')} class={tileClass}>
 			<Mail class="size-8 text-primary" aria-hidden="true" />
 			<div>
 				<h2 class="text-lg font-semibold">Kontakt</h2>
