@@ -1,8 +1,8 @@
 <script lang="ts">
 	type Stat = { id: number; label: string; value: string };
 
-	let { year, stats, infoHtml }: { year: number; stats: Stat[]; infoHtml: string | null } =
-		$props();
+	// Kept apart from the edition text, so the stats can be placed on any page on their own
+	let { year, stats }: { year: number; stats: Stat[] } = $props();
 </script>
 
 {#if stats.length > 0}
@@ -18,15 +18,5 @@
 				</div>
 			{/each}
 		</dl>
-	</section>
-{/if}
-
-{#if infoHtml}
-	<section class="glassCard p-6">
-		<!-- infoHtml is sanitized on the server before it reaches the page -->
-		<div class="mx-auto prose max-w-2xl text-foreground prose-invert">
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html infoHtml}
-		</div>
 	</section>
 {/if}

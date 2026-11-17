@@ -24,7 +24,9 @@ model Edition {
   registrationOpen Boolean       @default(false)
   registrationHtml String?
   heroTitle        String?
-  routes           Route[]
+  // Label of the home page button leading to the edition page; empty means the default label
+  infoButtonLabel  String?
+  routes          Route[]
   stats            EditionStat[]
 }
 

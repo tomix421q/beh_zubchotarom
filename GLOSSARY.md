@@ -12,6 +12,14 @@ _Avoid_: Edícia, event
 Ročník s najvyšším rokom; ukazuje sa na domovskej stránke. Admin ho nevyberá.
 _Avoid_: Hlavný ročník, posledný ročník
 
+**Info o ročníku**:
+Text ročníka (príbeh, propozície) a jeho štatistiky. Zobrazuje sa na stránke ročníka, nie na domovskej stránke; tam k nemu vedie tlačidlo vedľa registrácie, ktorého nápis si organizátor môže zmeniť.
+_Avoid_: Popis, detail ročníka
+
+**Sponzori**:
+Pás s logami partnerov pretekov v pätičke každej stránky, v dvoch riadkoch. Jeden zoznam platí pre všetky ročníky.
+_Avoid_: Partneri, footer
+
 **Vzhľad**:
 Spoločný názov pre logo, pozadie a fotky slidera, teda veci, ktoré určujú, ako web vyzerá na všetkých stránkach alebo na domovskej stránke. Má vlastnú stránku v administrácii.
 _Avoid_: Médiá, Fotky (logo a pozadie nie sú fotky)

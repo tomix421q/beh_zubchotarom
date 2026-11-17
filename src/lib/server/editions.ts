@@ -8,6 +8,7 @@ export type EditionFields = {
 	editionNumber: number;
 	eventDate: Date;
 	heroTitle: string | null;
+	infoButtonLabel: string | null;
 	galleryUrl: string | null;
 };
 
@@ -39,6 +40,8 @@ export function readEditionFields(formData: FormData): EditionFields | { message
 	const eventDate = parseBratislavaDateTime(String(formData.get('eventDate') ?? ''));
 	// An empty title means the default "Beh Zubrohlava + year" is shown in the Hero
 	const heroTitle = String(formData.get('heroTitle') ?? '').trim() || null;
+	// An empty label means the default "Info o tomto ročníku" is shown on the home page button
+	const infoButtonLabel = String(formData.get('infoButtonLabel') ?? '').trim() || null;
 	// An empty gallery means the archive page shows no gallery button
 	const galleryUrl = String(formData.get('galleryUrl') ?? '').trim() || null;
 
@@ -58,7 +61,7 @@ export function readEditionFields(formData: FormData): EditionFields | { message
 		return { message: 'Odkaz na galériu musí byť adresa začínajúca na https://.' };
 	}
 
-	return { year, editionNumber, eventDate, heroTitle, galleryUrl };
+	return { year, editionNumber, eventDate, heroTitle, infoButtonLabel, galleryUrl };
 }
 
 // Years are unique; exceptId lets an edition keep its own year when it is saved

@@ -16,6 +16,18 @@ export function getDayKey(date: Date): string {
 	return dayKeyFormatter.format(date);
 }
 
+export type EventStatus = 'upcoming' | 'today' | 'past';
+
+// Compared by calendar day like the Hero button, so the event day itself is "today" and not yet "past"
+export function getEventStatus(eventDate: Date, now: Date): EventStatus {
+	const eventDay = getDayKey(eventDate);
+	const today = getDayKey(now);
+
+	if (today > eventDay) return 'past';
+
+	return today === eventDay ? 'today' : 'upcoming';
+}
+
 const MS_PER_SECOND = 1000;
 const MS_PER_MINUTE = 60 * MS_PER_SECOND;
 const MS_PER_HOUR = 60 * MS_PER_MINUTE;

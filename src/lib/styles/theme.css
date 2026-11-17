@@ -24,6 +24,10 @@
 	--border: oklch(1 0 0 / 10%);
 	--input: oklch(1 0 0 / 15%);
 	--ring: oklch(0.556 0 0);
+	/* Sponsor logos are made for white paper (dark grey, navy and brown text), so their card is a solid light surface */
+	--sponsors: oklch(0.985 0 0);
+	--sponsors-foreground: oklch(0.205 0 0);
+	--sponsors-muted-foreground: oklch(0.439 0 0);
 	--radius: 0.625rem;
 }
 
@@ -50,6 +54,9 @@
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
+	--color-sponsors: var(--sponsors);
+	--color-sponsors-foreground: var(--sponsors-foreground);
+	--color-sponsors-muted-foreground: var(--sponsors-muted-foreground);
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -107,6 +114,11 @@
 	/* Cards move up and fade in on load and on navigation; reduced-motion users get them at once */
 	.glassCard {
 		@apply rounded-xl border border-border bg-card shadow-sm backdrop-blur-md motion-safe:animate-card-reveal;
+	}
+
+	/* The glass card with a solid light surface instead of the blur, so every sponsor logo reads clearly */
+	.sponsorsCard {
+		@apply rounded-xl border border-border bg-sponsors text-sponsors-foreground shadow-sm motion-safe:animate-card-reveal;
 	}
 
 	.inputNormalize {

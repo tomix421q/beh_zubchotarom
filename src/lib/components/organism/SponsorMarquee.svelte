@@ -28,11 +28,11 @@
 					class="max-h-12 w-auto max-w-40 object-contain sm:max-h-20 sm:max-w-60"
 				/>
 			{:else}
-				<span class="text-center text-base font-semibold text-foreground">{sponsor.name}</span>
+				<span class="text-center text-base font-semibold">{sponsor.name}</span>
 			{/if}
 		</div>
 		{#if sponsor.isMain}
-			<span class="text-xs text-muted-foreground">Hlavný sponzor</span>
+			<span class="text-xs text-sponsors-muted-foreground">Hlavný sponzor</span>
 		{/if}
 	</div>
 {/snippet}

@@ -7,7 +7,11 @@
 	import RichTextEditor from '#lib/components/molecules/RichTextEditor.svelte';
 	import SaveButton from '#lib/components/atoms/SaveButton.svelte';
 	import { saveStatus } from '#lib/utils/front/saveStatus.svelte.js';
-	import { FIRST_EDITION_YEAR, SITE_NAME } from '../../../../lib/constants';
+	import {
+		DEFAULT_INFO_BUTTON_LABEL,
+		FIRST_EDITION_YEAR,
+		SITE_NAME
+	} from '../../../../lib/constants';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -81,6 +85,16 @@
 					type="text"
 					value={data.edition.heroTitle ?? ''}
 					placeholder={`${SITE_NAME} ${data.edition.year}`}
+					class="inputNormalize"
+				/>
+			</Field>
+
+			<Field label="Tlačidlo na domovskej stránke (vedie na info o ročníku)">
+				<input
+					name="infoButtonLabel"
+					type="text"
+					value={data.edition.infoButtonLabel ?? ''}
+					placeholder={DEFAULT_INFO_BUTTON_LABEL}
 					class="inputNormalize"
 				/>
 			</Field>
